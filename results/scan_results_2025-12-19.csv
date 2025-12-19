@@ -1,0 +1,10 @@
+ticker,date,signals_met,total_score,current_price,volume,step5_signal,step5_score,step5_red_volume_ratio,step5_price_above_ema,step6_signal,step6_score,step6_rsi,step6_rsi_divergence,step6_macd_positive,step6_obv_rising,step7_signal,step7_score,step7_rs_slope,step7_outperformance
+TSLA,2025-12-19,2,15,481.20001220703125,85986084,False,3,1.083,True,True,5,67.91,False,True,True,True,7,0.00105324,1.26
+MSFT,2025-12-19,2,13,485.9200134277344,58921425,False,0,1.169,False,True,5,49.4,False,True,True,True,8,0.00466153,2.36
+META,2025-12-19,1,13,658.77001953125,47919952,False,3,1.09,True,False,3,57.45,False,True,False,True,7,0.00477058,1.76
+NVDA,2025-12-19,1,12,180.99000549316406,264623530,False,0,0.936,False,False,4,51.31,False,True,True,True,8,0.00095547,2.69
+AMZN,2025-12-19,1,12,227.35000610351562,68757005,False,0,0.93,False,False,4,39.27,False,True,True,True,8,0.00216411,2.18
+AMD,2025-12-19,1,12,213.42999267578125,47480230,False,0,0.994,False,False,4,44.37,False,True,True,True,8,0.00064208,2.84
+NFLX,2025-12-19,1,10,94.38999938964844,73746205,False,0,1.036,False,False,4,17.9,False,True,True,True,6,0.00015302,0.68
+GOOGL,2025-12-19,1,8,307.1600036621094,59497254,False,0,0.953,False,True,7,43.53,True,True,True,False,1,-0.00074022,-0.32
+AAPL,2025-12-19,0,5,273.6700134277344,111198501,False,0,0.926,False,False,4,30.33,False,True,True,False,1,-0.00032695,-0.14
