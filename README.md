@@ -1,6 +1,6 @@
 # Early Breakout Scanner 🚀
 
-A modular stock scanner focused on detecting **early breakout signals** before stocks make major moves. This scanner identifies stocks showing signs of institutional accumulation, momentum divergences, and relative strength.
+A modular stock scanner focused on detecting **early breakout signals** before stocks make major moves. This scanner identifies stocks showing signs of institutional accumulation, momentum divergences, and relative strength...
 
 ---
 
