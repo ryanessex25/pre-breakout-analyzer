@@ -9,9 +9,9 @@ import time
 import os
 import config
 from data_fetch import load_ticker_list, fetch_stock_data, fetch_spy_data
-from volume_dry_up import check_step5
-from divergences import check_step6
-from relative_strength import check_step7
+from volume_dry_up import check_step1
+from divergences import check_step2
+from relative_strength import check_step3
 from discord_alert import send_discord_alert, send_summary_alert
 
 
@@ -34,22 +34,22 @@ def scan_single_stock(ticker, spy_df):
         return None
     
     # Run all three signal checks
-    step5_result = check_step5(ticker, df)
-    step6_result = check_step6(ticker, df)
-    step7_result = check_step7(ticker, df, spy_df)
+    step1_result = check_step1(ticker, df)
+    step2_result = check_step2(ticker, df)
+    step3_result = check_step3(ticker, df, spy_df)
     
     # Count signals met
     signals_met = sum([
-        step5_result['signal'],
-        step6_result['signal'],
-        step7_result['signal']
+        step1_result['signal'],
+        step2_result['signal'],
+        step3_result['signal']
     ])
     
     # Calculate total score
     total_score = (
-        step5_result['score'] +
-        step6_result['score'] +
-        step7_result['score']
+        step1_result['score'] +
+        step2_result['score'] +
+        step3_result['score']
     )
     
     # Compile results
@@ -59,25 +59,25 @@ def scan_single_stock(ticker, spy_df):
         'signals_met': signals_met,
         'total_score': total_score,
         
-        # Step 5 results
-        'step5_signal': step5_result['signal'],
-        'step5_score': step5_result['score'],
-        'step5_red_volume_ratio': step5_result['details'].get('red_volume_ratio', 0),
-        'step5_price_above_ema': step5_result['details'].get('price_above_ema_21', False),
+        # Step 1 results
+        'step_signal': step1_result['signal'],
+        'step1_score': step1_result['score'],
+        'step1_red_volume_ratio': step1_result['details'].get('red_volume_ratio', 0),
+        'step1_price_above_ema': step1_result['details'].get('price_above_ema_21', False),
         
-        # Step 6 results
-        'step6_signal': step6_result['signal'],
-        'step6_score': step6_result['score'],
-        'step6_rsi': step6_result['details'].get('rsi_current', 0),
-        'step6_rsi_divergence': step6_result['details'].get('rsi_divergence', False),
-        'step6_macd_positive': step6_result['details'].get('macd_turning_positive', False),
-        'step6_obv_rising': step6_result['details'].get('obv_rising', False),
+        # Step 2 results
+        'step2_signal': step2_result['signal'],
+        'step2_score': step2_result['score'],
+        'step2_rsi': step2_result['details'].get('rsi_current', 0),
+        'step2_rsi_divergence': step2_result['details'].get('rsi_divergence', False),
+        'step2_macd_positive': step2_result['details'].get('macd_turning_positive', False),
+        'step2_obv_rising': step2_result['details'].get('obv_rising', False),
         
-        # Step 7 results
-        'step7_signal': step7_result['signal'],
-        'step7_score': step7_result['score'],
-        'step7_rs_slope': step7_result['details'].get('rs_slope', 0),
-        'step7_outperformance': step7_result['details'].get('outperformance', 0),
+        # Step 3 results
+        'step3_signal': step3_result['signal'],
+        'step3_score': step3_result['score'],
+        'step3_rs_slope': step3_result['details'].get('rs_slope', 0),
+        'step3_outperformance': step3_result['details'].get('outperformance', 0),
         
         # Price info
         'current_price': df['Close'].iloc[-1],
@@ -176,11 +176,11 @@ def run_scanner():
         for i, stock in enumerate(results[:10], 1):
             signals_str = f"{stock['signals_met']}/3"
             details = []
-            if stock['step5_signal']:
+            if stock['step1_signal']:
                 details.append("Vol")
-            if stock['step6_signal']:
+            if stock['step2_signal']:
                 details.append("Div")
-            if stock['step7_signal']:
+            if stock['step3_signal']:
                 details.append("RS")
             
             details_str = ", ".join(details) if details else "None"
@@ -215,10 +215,10 @@ def save_results(results):
     # Reorder columns for better readability
     column_order = [
         'ticker', 'date', 'signals_met', 'total_score', 'current_price', 'volume',
-        'step5_signal', 'step5_score', 'step5_red_volume_ratio', 'step5_price_above_ema',
-        'step6_signal', 'step6_score', 'step6_rsi', 'step6_rsi_divergence', 
-        'step6_macd_positive', 'step6_obv_rising',
-        'step7_signal', 'step7_score', 'step7_rs_slope', 'step7_outperformance'
+        'step1_signal', 'step1_score', 'step1_red_volume_ratio', 'step1_price_above_ema',
+        'step2_signal', 'step2_score', 'step2_rsi', 'step2_rsi_divergence', 
+        'step2_macd_positive', 'step2_obv_rising',
+        'step3_signal', 'step3_score', 'step3_rs_slope', 'step3_outperformance'
     ]
     
     df = df[column_order]

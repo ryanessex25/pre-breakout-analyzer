@@ -3,23 +3,22 @@
 A modular stock scanner focused on detecting **early breakout signals** before stocks make major moves. This scanner identifies stocks showing signs of institutional accumulation, momentum divergences, and relative strength...
 
 ---
-
 ## 📋 Features
 
 ### Core Detection Signals (Steps 5-7)
 
-1. **Step 5: Volume Dry-Up During Pullback**
+1. **Step 1: Volume Dry-Up During Pullback**
    - Detects pullbacks on light volume (no selling pressure)
    - Checks if price holds above 21 EMA
    - Scores 0-10 based on volume patterns
 
-2. **Step 6: Momentum Divergences**
+2. **Step 2: Momentum Divergences**
    - RSI rising while price consolidates (hidden strength)
    - MACD histogram turning positive
    - OBV trending upward (institutional buying)
    - Scores 0-10 based on divergence strength
 
-3. **Step 7: Relative Strength vs SPY**
+3. **Step 3: Relative Strength vs SPY**
    - Stock outperforming market during consolidation
    - RS ratio increasing over 5 days
    - Scores 0-10 based on outperformance
@@ -37,29 +36,25 @@ A modular stock scanner focused on detecting **early breakout signals** before s
 Edit `config.py` to customize:
 
 ### Alert Threshold
-```python
 ALERT_THRESHOLD = 2  # Alert when 2 out of 3 signals met
-```
+
 
 ### Volume Dry-Up Settings
-```python
 STEP5_LOOKBACK_PERIOD = 20  # Days for volume average
 STEP5_RED_DAY_VOLUME_RATIO = 0.7  # Red day volume threshold
 STEP5_EMA_PERIOD = 21  # EMA support level
-```
+
 
 ### Divergence Settings
-```python
 STEP6_RSI_PERIOD = 14
 STEP6_RSI_LOOKBACK = 5  # Days to check RSI trend
 STEP6_OBV_LOOKBACK = 5  # Days to check OBV slope
-```
+
 
 ### Relative Strength Settings
-```python
 STEP7_RS_LOOKBACK = 5  # Days for RS calculation
 STEP7_SPY_SYMBOL = "SPY"  # Benchmark
-```
+
 
 ---
 

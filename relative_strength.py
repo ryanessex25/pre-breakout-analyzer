@@ -1,5 +1,5 @@
 """
-STEP 7: Relative Strength vs Sector or Market
+STEP 3: Relative Strength vs Sector or Market
 Detects when stock outperforms SPY (smart money signal)
 """
 
@@ -126,9 +126,9 @@ def analyze_relative_strength(df, spy_df):
         }
 
 
-def check_step7(ticker, df, spy_df):
+def check_step3(ticker, df, spy_df):
     """
-    Wrapper function for Step 7 analysis
+    Wrapper function for Step 3 analysis
     
     Args:
         ticker (str): Stock symbol
@@ -140,6 +140,6 @@ def check_step7(ticker, df, spy_df):
     """
     result = analyze_relative_strength(df, spy_df)
     result['ticker'] = ticker
-    result['step'] = 'Step 7: Relative Strength'
+    result['step'] = 'Step 3: Relative Strength'
     
     return result

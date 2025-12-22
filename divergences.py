@@ -1,5 +1,5 @@
 """
-STEP 6: Momentum Divergences (RSI / MACD / OBV)
+STEP 2: Momentum Divergences (RSI / MACD / OBV)
 Detects when indicators strengthen before price does (hidden accumulation)
 """
 
@@ -122,9 +122,9 @@ def analyze_divergences(df):
         }
 
 
-def check_step6(ticker, df):
+def check_step2(ticker, df):
     """
-    Wrapper function for Step 6 analysis
+    Wrapper function for Step 2 analysis
     
     Args:
         ticker (str): Stock symbol
@@ -135,6 +135,6 @@ def check_step6(ticker, df):
     """
     result = analyze_divergences(df)
     result['ticker'] = ticker
-    result['step'] = 'Step 6: Divergences'
+    result['step'] = 'Step 2: Divergences'
     
     return result

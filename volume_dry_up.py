@@ -1,5 +1,5 @@
 """
-STEP 5: Volume Dry-Up During Pullback
+STEP 1: Volume Dry-Up During Pullback
 Detects when pullbacks occur on lighter volume (no aggressive selling)
 """
 
@@ -95,9 +95,9 @@ def analyze_volume_dryup(df):
         }
 
 
-def check_step5(ticker, df):
+def check_step1(ticker, df):
     """
-    Wrapper function for Step 5 analysis
+    Wrapper function for Step 1 analysis
     
     Args:
         ticker (str): Stock symbol
@@ -108,6 +108,6 @@ def check_step5(ticker, df):
     """
     result = analyze_volume_dryup(df)
     result['ticker'] = ticker
-    result['step'] = 'Step 5: Volume Dry-Up'
+    result['step'] = 'Step 1: Volume Dry-Up'
     
     return result
