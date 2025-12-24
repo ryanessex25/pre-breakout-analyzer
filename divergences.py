@@ -38,22 +38,22 @@ def analyze_divergences(df):
             }
         
         # Calculate indicators
-        df['RSI'] = calculate_rsi(df['Close'], config.STEP6_RSI_PERIOD)
+        df['RSI'] = calculate_rsi(df['Close'], config.STEP2_RSI_PERIOD)
         macd_line, signal_line, histogram = calculate_macd(
             df['Close'], 
-            config.STEP6_MACD_FAST, 
-            config.STEP6_MACD_SLOW, 
-            config.STEP6_MACD_SIGNAL
+            config.STEP2_MACD_FAST, 
+            config.STEP2_MACD_SLOW, 
+            config.STEP2_MACD_SIGNAL
         )
         df['MACD_histogram'] = histogram
         df['OBV'] = calculate_obv(df)
         
         # Check RSI trend (last 5 days)
-        rsi_slope = calculate_slope(df['RSI'], config.STEP6_RSI_LOOKBACK)
+        rsi_slope = calculate_slope(df['RSI'], config.STEP2_RSI_LOOKBACK)
         rsi_rising = rsi_slope > 0
         
         # Check price trend (last 5 days)
-        price_slope = calculate_slope(df['Close'], config.STEP6_RSI_LOOKBACK)
+        price_slope = calculate_slope(df['Close'], config.STEP2_RSI_LOOKBACK)
         price_flat_or_down = price_slope <= 0.5  # Slightly positive is ok
         
         # RSI divergence: RSI rising while price not rising much
@@ -65,7 +65,7 @@ def analyze_divergences(df):
         macd_turning_positive = current_histogram > 0 or (current_histogram > prev_histogram and prev_histogram < 0)
         
         # OBV trend check
-        obv_slope = calculate_slope(df['OBV'], config.STEP6_OBV_LOOKBACK)
+        obv_slope = calculate_slope(df['OBV'], config.STEP2_OBV_LOOKBACK)
         obv_rising = obv_slope > 0
         
         # Scoring logic (0-10)
