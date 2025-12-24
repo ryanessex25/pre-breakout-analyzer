@@ -80,27 +80,23 @@ def analyze_relative_strength(df, spy_df):
         
         # RS slope component (0-5 points)
         if rs_slope > 0:
-            if rs_change_pct > 3:  # Strong outperformance
+            if rs_change_pct > 5:  # Strong outperformance
                 score += 5
-            elif rs_change_pct > 1:
-                score += 4
-            elif rs_change_pct > 0.3:
+            elif rs_change_pct > 2:
                 score += 3
-            else:
+            elif rs_change_pct > 1:
                 score += 2
-        
+          
         # Outperformance component (0-5 points)
-        if outperformance > 5:  # Significantly outperforming
+        if outperformance > 8:  # Significantly outperforming
             score += 5
-        elif outperformance > 2:
+        elif outperformance > 5:
             score += 4
-        elif outperformance > 0:
+        elif outperformance > 2:
             score += 3
-        elif outperformance > -2:  # Slightly underperforming is ok if RS slope positive
-            score += 1
-        
+  
         # Signal triggers if score >= 5
-        signal_triggered = score >= 5
+        signal_triggered = score >= 7
         
         details = {
             'rs_ratio_current': round(rs_current, 6),

@@ -73,29 +73,29 @@ def analyze_divergences(df):
         
         # RSI divergence (0-4 points)
         if rsi_divergence:
-            if rsi_slope > 2:  # Strong divergence
+            if rsi_slope > 3:  # Strong divergence
                 score += 4
-            elif rsi_slope > 1:
+            elif rsi_slope > 2:
                 score += 3
-            else:
+            elif rsi_slope > 1:
                 score += 2
         
         # MACD component (0-3 points)
         if macd_turning_positive:
-            if current_histogram > 0:
+            if current_histogram > 1:
                 score += 3
-            else:
-                score += 2
+            elif current_histogram > 0:
+                score += 1
         
         # OBV component (0-3 points)
         if obv_rising:
-            if obv_slope > np.percentile(df['OBV'].diff(), 75):  # Strong OBV increase
+            if obv_slope > np.percentile(df['OBV'].diff(), 85):  # Strong OBV increase
                 score += 3
-            else:
+            elif obv_slope > np.percentile(df['OBV'].diff(), 70):
                 score += 2
         
         # Signal triggers if score >= 5
-        signal_triggered = score >= 5
+        signal_triggered = score >= 7
         
         details = {
             'rsi_current': round(df['RSI'].iloc[-1], 2),

@@ -56,21 +56,21 @@ def analyze_volume_dryup(df):
         score = 0
         
         # Volume dry-up component (0-7 points)
-        if red_volume_ratio < 0.5:
+        if red_volume_ratio < 0.4:
             score += 7
+        elif red_volume_ratio < 0.5:
+            score += 6
         elif red_volume_ratio < 0.6:
-            score += 5
-        elif red_volume_ratio < config.STEP1_RED_DAY_VOLUME_RATIO:
-            score += 3
-        elif red_volume_ratio < 0.8:
-            score += 1
+            score += 4
+        elif red_volume_ratio < 0.7:
+            score += 2
         
         # Price above EMA component (0-3 points)
         if price_above_ema:
             score += 3
         
         # Signal triggers if score >= 5
-        signal_triggered = score >= 5
+        signal_triggered = score >= 7
         
         details = {
             'red_day_avg_volume': round(red_day_avg_volume, 0),
