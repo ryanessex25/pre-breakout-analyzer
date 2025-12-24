@@ -63,7 +63,7 @@ def fetch_spy_data(days=None):
     Returns:
         pd.DataFrame: SPY OHLCV data
     """
-    return fetch_stock_data(config.STEP7_SPY_SYMBOL, days)
+    return fetch_stock_data(config.STEP3_SPY_SYMBOL, days)
 
 
 def load_ticker_list(filepath=None):
