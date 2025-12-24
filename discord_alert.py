@@ -29,31 +29,54 @@ def send_discord_alert(results):
         return False
     
     try:
+        # Sort by score and take top 10 only
+        top_alerts = sorted(results, key=lambda x: x.get('total_score', 0), reverse=True)[:10]
+        
         # Create embed message
         embed = {
-            "title": "🚨 Early Breakout Scanner Alert",
-            "description": f"Found **{len(results)}** stocks meeting criteria (2+ signals)",
+            "title": "🚨 Early Breakout Scanner - Top 10 Alerts",
+            "description": f"Found **{len(results)}** total alerts. Showing top 10 by score.",
             "color": 5814783,  # Green color
             "timestamp": datetime.utcnow().isoformat(),
             "fields": []
         }
         
-        # Add each stock as a field
-        for stock in results[:10]:  # Limit to 10 stocks per message (Discord limit is 25)
+        # Add each stock as a field with detailed info
+        for i, stock in enumerate(top_alerts, 1):
             signals_met = []
-            if stock.get('step5_signal'):
-                signals_met.append("✅ Volume Dry-Up")
-            if stock.get('step6_signal'):
-                signals_met.append("✅ Divergences")
-            if stock.get('step7_signal'):
-                signals_met.append("✅ Rel. Strength")
             
+            # Volume Dry-Up
+            if stock.get('step1_signal'):
+                signals_met.append("✅ Vol Dry-Up")
+                vol_details = f"(Ratio: {stock.get('step1_red_volume_ratio', 0):.2f})"
+            else:
+                vol_details = f"❌ Vol (Ratio: {stock.get('step1_red_volume_ratio', 0):.2f})"
+            
+            # Divergences
+            if stock.get('step2_signal'):
+                signals_met.append("✅ Divergences")
+                div_details = f"(RSI: {stock.get('step2_rsi', 0):.1f})"
+            else:
+                div_details = f"❌ Div (RSI: {stock.get('step2_rsi', 0):.1f})"
+            
+            # Relative Strength
+            if stock.get('step3_signal'):
+                signals_met.append("✅ Rel Strength")
+                rs_details = f"(+{stock.get('step3_outperformance', 0):.1f}% vs SPY)"
+            else:
+                rs_details = f"❌ RS ({stock.get('step3_outperformance', 0):.1f}% vs SPY)"
+            
+            # Build field value with all details
             field_value = "\n".join(signals_met)
-            field_value += f"\n**Total Score:** {stock.get('total_score', 0):.1f}/30"
+            field_value += f"\n\n**Score:** {stock.get('total_score', 0):.0f}/30"
             field_value += f"\n**Price:** ${stock.get('current_price', 0):.2f}"
+            field_value += f"\n**Volume:** {stock.get('volume', 0):,.0f}"
+            field_value += f"\n\n{vol_details}"
+            field_value += f"\n{div_details}"
+            field_value += f"\n{rs_details}"
             
             embed["fields"].append({
-                "name": f"📈 {stock['ticker']}",
+                "name": f"#{i} - {stock['ticker']}",
                 "value": field_value,
                 "inline": True
             })
@@ -75,7 +98,7 @@ def send_discord_alert(results):
         )
         
         if response.status_code == 204:
-            print(f"✅ Discord alert sent successfully for {len(results)} stocks")
+            print(f"✅ Discord alert sent successfully for top 10 stocks (out of {len(results)} total)")
             return True
         else:
             print(f"❌ Discord alert failed: {response.status_code} - {response.text}")
