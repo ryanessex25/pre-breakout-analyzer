@@ -28,7 +28,7 @@ def analyze_volume_dryup(df):
     """
     
     try:
-        if len(df) < config.STEP5_LOOKBACK_PERIOD + 5:
+        if len(df) < config.STEP1_LOOKBACK_PERIOD + 5:
             return {
                 'signal': False,
                 'score': 0,
@@ -36,13 +36,13 @@ def analyze_volume_dryup(df):
             }
         
         # Calculate 21 EMA
-        df['EMA_21'] = calculate_ema(df['Close'], config.STEP5_EMA_PERIOD)
+        df['EMA_21'] = calculate_ema(df['Close'], config.STEP1_EMA_PERIOD)
         
         # Get 20-day average volume
-        avg_volume_20d = df['Volume'].tail(config.STEP5_LOOKBACK_PERIOD).mean()
+        avg_volume_20d = df['Volume'].tail(config.STEP1_LOOKBACK_PERIOD).mean()
         
         # Get average volume on red days
-        red_day_avg_volume = get_red_day_avg_volume(df, config.STEP5_LOOKBACK_PERIOD)
+        red_day_avg_volume = get_red_day_avg_volume(df, config.STEP1_LOOKBACK_PERIOD)
         
         # Calculate ratio
         red_volume_ratio = red_day_avg_volume / avg_volume_20d if avg_volume_20d > 0 else 1
@@ -60,7 +60,7 @@ def analyze_volume_dryup(df):
             score += 7
         elif red_volume_ratio < 0.6:
             score += 5
-        elif red_volume_ratio < config.STEP5_RED_DAY_VOLUME_RATIO:
+        elif red_volume_ratio < config.STEP1_RED_DAY_VOLUME_RATIO:
             score += 3
         elif red_volume_ratio < 0.8:
             score += 1

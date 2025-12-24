@@ -12,12 +12,12 @@ RESULTS_FOLDER = "results"
 # ===== SCANNING SETTINGS =====
 ALERT_THRESHOLD = 2  # Alert when stock meets 2 out of 3 signals
 
-# ===== STEP 5: VOLUME DRY-UP THRESHOLDS =====
+# ===== STEP 1: VOLUME DRY-UP THRESHOLDS =====
 STEP1_LOOKBACK_PERIOD = 20  # Days to calculate average volume
 STEP1_RED_DAY_VOLUME_RATIO = 0.7  # Red day volume < 0.7x 20-day avg
 STEP1_EMA_PERIOD = 21  # EMA period for pullback support
 
-# ===== STEP 6: MOMENTUM DIVERGENCE THRESHOLDS =====
+# ===== STEP 2: MOMENTUM DIVERGENCE THRESHOLDS =====
 STEP2_RSI_PERIOD = 14
 STEP2_RSI_LOOKBACK = 5  # Days to check if RSI is rising
 STEP2_OBV_LOOKBACK = 5  # Days to check if OBV slope is positive
@@ -25,7 +25,7 @@ STEP2_MACD_FAST = 12
 STEP2_MACD_SLOW = 26
 STEP2_MACD_SIGNAL = 9
 
-# ===== STEP 7: RELATIVE STRENGTH THRESHOLDS =====
+# ===== STEP 3: RELATIVE STRENGTH THRESHOLDS =====
 STEP3_RS_LOOKBACK = 5  # Days to calculate RS slope
 STEP3_SPY_SYMBOL = "SPY"  # Benchmark for relative strength
 

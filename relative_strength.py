@@ -36,7 +36,7 @@ def analyze_relative_strength(df, spy_df):
                 'details': {'error': 'Missing data'}
             }
         
-        if len(df) < config.STEP7_RS_LOOKBACK + 5 or len(spy_df) < config.STEP7_RS_LOOKBACK + 5:
+        if len(df) < config.STEP3_RS_LOOKBACK + 5 or len(spy_df) < config.STEP3_RS_LOOKBACK + 5:
             return {
                 'signal': False,
                 'score': 0,
@@ -49,7 +49,7 @@ def analyze_relative_strength(df, spy_df):
             'spy_close': spy_df['Close']
         }).dropna()
         
-        if len(aligned_df) < config.STEP7_RS_LOOKBACK:
+        if len(aligned_df) < config.STEP3_RS_LOOKBACK:
             return {
                 'signal': False,
                 'score': 0,
@@ -60,18 +60,18 @@ def analyze_relative_strength(df, spy_df):
         aligned_df['rs_ratio'] = aligned_df['stock_close'] / aligned_df['spy_close']
         
         # Calculate RS slope
-        rs_slope = calculate_slope(aligned_df['rs_ratio'], config.STEP7_RS_LOOKBACK)
+        rs_slope = calculate_slope(aligned_df['rs_ratio'], config.STEP3_RS_LOOKBACK)
         
         # Calculate percentage change in RS over period
         rs_current = aligned_df['rs_ratio'].iloc[-1]
-        rs_past = aligned_df['rs_ratio'].iloc[-config.STEP7_RS_LOOKBACK]
+        rs_past = aligned_df['rs_ratio'].iloc[-config.STEP3_RS_LOOKBACK]
         rs_change_pct = ((rs_current - rs_past) / rs_past) * 100 if rs_past != 0 else 0
         
         # Calculate stock vs SPY performance
-        stock_change = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.STEP7_RS_LOOKBACK]) 
-                       / aligned_df['stock_close'].iloc[-config.STEP7_RS_LOOKBACK] * 100)
-        spy_change = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.STEP7_RS_LOOKBACK]) 
-                     / aligned_df['spy_close'].iloc[-config.STEP7_RS_LOOKBACK] * 100)
+        stock_change = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK]) 
+                       / aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK] * 100)
+        spy_change = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK]) 
+                     / aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK] * 100)
         
         outperformance = stock_change - spy_change
         
