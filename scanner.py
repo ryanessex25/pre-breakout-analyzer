@@ -7,6 +7,7 @@ import pandas as pd
 from datetime import datetime
 import time
 import os
+import sys
 import config
 from data_fetch import load_ticker_list, fetch_stock_data, fetch_spy_data
 from volume_dry_up import check_step1
@@ -60,7 +61,7 @@ def scan_single_stock(ticker, spy_df):
         'total_score': total_score,
         
         # Step 1 results
-        'step_signal': step1_result['signal'],
+        'step1_signal': step1_result['signal'],
         'step1_score': step1_result['score'],
         'step1_red_volume_ratio': step1_result['details'].get('red_volume_ratio', 0),
         'step1_price_above_ema': step1_result['details'].get('price_above_ema_21', False),
@@ -87,9 +88,12 @@ def scan_single_stock(ticker, spy_df):
     return result
 
 
-def run_scanner():
+def run_scanner(limit=None):
     """
     Main scanner function - runs all checks and generates output
+    
+    Args:
+        limit (int): Optional limit on number of tickers to scan
     """
     
     print("\n" + "="*60)
@@ -104,6 +108,11 @@ def run_scanner():
     if not tickers:
         print("❌ No tickers to scan. Exiting.")
         return
+    
+    # Apply limit if specified
+    if limit is not None:
+        tickers = tickers[:limit]
+        print(f"📊 Limiting scan to first {limit} tickers\n")
     
     print(f"📊 Scanning {len(tickers)} stocks...\n")
     
@@ -228,4 +237,17 @@ def save_results(results):
 
 
 if __name__ == "__main__":
-    run_scanner()
+    # Check for command-line arguments
+    limit = None
+    
+    if len(sys.argv) > 1:
+        try:
+            limit = int(sys.argv[1])
+            print(f"\n🎯 Running with limit: {limit} tickers")
+        except ValueError:
+            print(f"\n⚠️  Invalid limit argument: {sys.argv[1]}")
+            print("Usage: python scanner.py [limit]")
+            print("Example: python scanner.py 100")
+            sys.exit(1)
+    
+    run_scanner(limit)
