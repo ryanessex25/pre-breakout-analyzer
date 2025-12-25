@@ -61,10 +61,18 @@ def analyze_divergences(df):
         # RSI divergence: RSI rising while price not rising much
         rsi_divergence = rsi_rising and price_flat_or_down
         
-        # MACD histogram check
+        # MACD histogram check - separate early vs late signals
         current_histogram = df['MACD_histogram'].iloc[-1]
         prev_histogram = df['MACD_histogram'].iloc[-2]
-        macd_turning_positive = current_histogram > 0 or (current_histogram > prev_histogram and prev_histogram < 0)
+        
+        # Early signal: histogram negative but improving (WHAT WE WANT)
+        macd_improving_from_negative = current_histogram > prev_histogram and current_histogram < 0
+        
+        # Late signal: histogram already positive
+        macd_histogram_positive = current_histogram > 0
+        
+        # Combined for backwards compatibility
+        macd_turning_positive = macd_histogram_positive or macd_improving_from_negative
         
         # OBV trend check
         obv_slope = calculate_slope(df['OBV'], config.STEP2_OBV_LOOKBACK)
@@ -104,15 +112,25 @@ def analyze_divergences(df):
             score += 0  # We missed the early entry
         
         # MACD component (0-3 points) - REWARD TURNING POINTS, NOT ESTABLISHED STRENGTH
-        if current_histogram < 0 and current_histogram > prev_histogram:
-            # Perfect: histogram negative but improving (turning point)
-            score += 3
-        elif current_histogram > 0 and current_histogram < 0.5:
-            # Just turned positive recently (early)
+        if macd_improving_from_negative:
+            # PERFECT: Histogram negative but improving (catching the turn BEFORE it goes positive)
+            # Example: -0.8 yesterday, -0.3 today = improving by 0.5
+            improvement = current_histogram - prev_histogram
+            if improvement > 0.2:
+                score += 3  # Strong improvement
+            else:
+                score += 3  # Any improvement from negative is great
+        elif macd_histogram_positive and current_histogram < 0.5:
+            # GOOD: Just turned positive recently (small positive value)
+            # Example: +0.1 today (just crossed zero)
             score += 2
-        elif macd_turning_positive:
-            # General positive momentum
+        elif macd_histogram_positive:
+            # OK: Already positive and established (late signal)
+            # Example: +2.5 today (been positive for a while)
             score += 1
+        else:
+            # Histogram negative and not improving (or getting worse)
+            score += 0
         
         # OBV component (0-2 points) - ACCUMULATION SIGNAL
         if obv_rising:
@@ -129,6 +147,9 @@ def analyze_divergences(df):
             'rsi_slope': round(rsi_slope, 3),
             'rsi_divergence': rsi_divergence,
             'macd_histogram': round(current_histogram, 4),
+            'macd_histogram_prev': round(prev_histogram, 4),
+            'macd_improving_from_negative': macd_improving_from_negative,
+            'macd_histogram_positive': macd_histogram_positive,
             'macd_turning_positive': macd_turning_positive,
             'obv_slope': round(obv_slope, 0),
             'obv_rising': obv_rising,
