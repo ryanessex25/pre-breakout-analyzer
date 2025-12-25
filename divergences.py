@@ -1,6 +1,7 @@
 """
 STEP 2: Momentum Divergences (RSI / MACD / OBV)
 Detects when indicators strengthen before price does (hidden accumulation)
+UPDATED: Focus on EARLY accumulation phase (RSI 40-65, not overbought)
 """
 
 import pandas as pd
@@ -13,10 +14,11 @@ def analyze_divergences(df):
     """
     Analyze momentum divergences in RSI, MACD, and OBV
     
-    Criteria:
-    - RSI rising over last 5 days while price flat or down
-    - MACD histogram turning positive
-    - OBV trending upward (5-day slope > 0)
+    UPDATED CRITERIA FOR EARLY DETECTION:
+    - RSI between 40-65 (building strength, not overbought)
+    - MACD histogram negative but improving (turning point)
+    - OBV trending upward (accumulation)
+    - PENALIZE RSI > 70 (that's too late)
     
     Args:
         df (pd.DataFrame): OHLCV data
@@ -68,33 +70,58 @@ def analyze_divergences(df):
         obv_slope = calculate_slope(df['OBV'], config.STEP2_OBV_LOOKBACK)
         obv_rising = obv_slope > 0
         
-        # Scoring logic (0-10)
+        # Get current RSI value
+        current_rsi = df['RSI'].iloc[-1]
+        
+        # Scoring logic (0-10) - EARLY ACCUMULATION FOCUS
         score = 0
         
-        # RSI divergence (0-4 points)
-        if rsi_divergence:
-            if rsi_slope > 3:  # Strong divergence
-                score += 4
-            elif rsi_slope > 2:
-                score += 3
-            elif rsi_slope > 1:
-                score += 2
+        # RSI component (0-5 points) - REWARD EARLY STRENGTH (40-65), PENALIZE OVERBOUGHT (>70)
+        if 40 <= current_rsi <= 65:
+            # SWEET SPOT - this is the BEST zone (max 5 points)
+            if rsi_divergence and rsi_slope > 2:
+                score += 5  # Perfect: strong divergence in ideal range
+            elif rsi_divergence and rsi_slope > 1:
+                score += 4  # Great: good divergence in ideal range
+            elif rsi_rising:
+                score += 3  # Good: RSI rising in accumulation zone
+            else:
+                score += 2  # Okay: in good range but not doing much
+        elif 35 <= current_rsi < 40:
+            # EARLY RECOVERY - might be too early (max 2 points)
+            if rsi_rising:
+                score += 2  # Rising from oversold
+            else:
+                score += 0  # Too early and not even rising
+        elif 65 < current_rsi <= 70:
+            # GETTING EXTENDED - starting to get late (max 1 point)
+            if rsi_divergence:
+                score += 1  # Still has divergence but getting extended
+            else:
+                score += 0  # Just momentum, getting late
+        elif current_rsi > 70:
+            # TOO LATE - already overbought (0 points)
+            score += 0  # We missed the early entry
         
-        # MACD component (0-3 points)
-        if macd_turning_positive:
-            if current_histogram > 1:
-                score += 3
-            elif current_histogram > 0:
+        # MACD component (0-3 points) - REWARD TURNING POINTS, NOT ESTABLISHED STRENGTH
+        if current_histogram < 0 and current_histogram > prev_histogram:
+            # Perfect: histogram negative but improving (turning point)
+            score += 3
+        elif current_histogram > 0 and current_histogram < 0.5:
+            # Just turned positive recently (early)
+            score += 2
+        elif macd_turning_positive:
+            # General positive momentum
+            score += 1
+        
+        # OBV component (0-2 points) - ACCUMULATION SIGNAL
+        if obv_rising:
+            if obv_slope > np.percentile(df['OBV'].diff(), 75):  # Strong accumulation
+                score += 2
+            else:
                 score += 1
         
-        # OBV component (0-3 points)
-        if obv_rising:
-            if obv_slope > np.percentile(df['OBV'].diff(), 85):  # Strong OBV increase
-                score += 3
-            elif obv_slope > np.percentile(df['OBV'].diff(), 70):
-                score += 2
-        
-        # Signal triggers if score >= 5
+        # Signal triggers if score >= 7 (stricter threshold for quality)
         signal_triggered = score >= 7
         
         details = {
@@ -105,7 +132,8 @@ def analyze_divergences(df):
             'macd_turning_positive': macd_turning_positive,
             'obv_slope': round(obv_slope, 0),
             'obv_rising': obv_rising,
-            'price_slope': round(price_slope, 3)
+            'price_slope': round(price_slope, 3),
+            'rsi_in_accumulation_zone': 40 <= current_rsi <= 65
         }
         
         return {

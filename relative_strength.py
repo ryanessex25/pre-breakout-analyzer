@@ -1,9 +1,11 @@
 """
 STEP 3: Relative Strength vs Sector or Market
 Detects when stock outperforms SPY (smart money signal)
+UPDATED: Focus on EARLY outperformance and turning points, not established strength
 """
 
 import pandas as pd
+import numpy as np
 import config
 from utils import calculate_slope
 
@@ -12,9 +14,11 @@ def analyze_relative_strength(df, spy_df):
     """
     Analyze relative strength vs SPY
     
-    Criteria:
-    - (Stock close / SPY close) ratio increasing
-    - 5-day RS slope > 0
+    UPDATED CRITERIA FOR EARLY DETECTION:
+    - RS slope just turned positive (turning point)
+    - Reward SMALL outperformance (0-5%) over large (>10%)
+    - Detect recent RS improvement (last 2-3 days)
+    - PENALIZE stocks already up 20%+ (too late)
     
     Args:
         df (pd.DataFrame): Stock OHLCV data
@@ -59,15 +63,22 @@ def analyze_relative_strength(df, spy_df):
         # Calculate RS ratio (Stock / SPY)
         aligned_df['rs_ratio'] = aligned_df['stock_close'] / aligned_df['spy_close']
         
-        # Calculate RS slope
+        # Calculate RS slope over 5 days
         rs_slope = calculate_slope(aligned_df['rs_ratio'], config.STEP3_RS_LOOKBACK)
+        
+        # Calculate RS slope over last 2-3 days (recent turning point)
+        rs_slope_recent = calculate_slope(aligned_df['rs_ratio'], 3)
+        
+        # Check if RS just turned positive (was negative, now positive)
+        rs_slope_prev = calculate_slope(aligned_df['rs_ratio'].iloc[:-1], 3)
+        rs_just_turned_positive = (rs_slope_recent > 0 and rs_slope_prev <= 0)
         
         # Calculate percentage change in RS over period
         rs_current = aligned_df['rs_ratio'].iloc[-1]
         rs_past = aligned_df['rs_ratio'].iloc[-config.STEP3_RS_LOOKBACK]
         rs_change_pct = ((rs_current - rs_past) / rs_past) * 100 if rs_past != 0 else 0
         
-        # Calculate stock vs SPY performance
+        # Calculate stock vs SPY performance over 5 days
         stock_change = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK]) 
                        / aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK] * 100)
         spy_change = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK]) 
@@ -75,36 +86,86 @@ def analyze_relative_strength(df, spy_df):
         
         outperformance = stock_change - spy_change
         
-        # Scoring logic (0-10)
+        # Calculate stock performance over longer period (20 days) to check if already extended
+        lookback_20d = min(20, len(aligned_df))
+        stock_change_20d = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-lookback_20d]) 
+                           / aligned_df['stock_close'].iloc[-lookback_20d] * 100)
+        
+        # Scoring logic (0-10) - FOCUS ON EARLY TURNING POINTS
         score = 0
         
-        # RS slope component (0-5 points)
-        if rs_slope > 0:
-            if rs_change_pct > 5:  # Strong outperformance
-                score += 5
-            elif rs_change_pct > 2:
-                score += 3
-            elif rs_change_pct > 1:
-                score += 2
-          
-        # Outperformance component (0-5 points)
-        if outperformance > 8:  # Significantly outperforming
-            score += 5
-        elif outperformance > 5:
+        # Component 1: RS Slope Turning Point (0-4 points)
+        if rs_just_turned_positive:
+            # PERFECT: Just caught the turn from negative to positive
             score += 4
-        elif outperformance > 2:
+        elif rs_slope > 0 and rs_slope_recent > rs_slope:
+            # GOOD: Positive and accelerating recently
             score += 3
-  
-        # Signal triggers if score >= 5
+        elif rs_slope > 0:
+            # OK: Positive but not accelerating
+            score += 2
+        elif rs_slope > -0.0001:
+            # EARLY: Almost turning positive (very small negative)
+            score += 1
+        else:
+            # Negative slope - not ready yet
+            score += 0
+        
+        # Component 2: Outperformance Sweet Spot (0-4 points)
+        # REWARD SMALL OUTPERFORMANCE, PENALIZE LARGE MOVES
+        if 0 <= outperformance <= 3:
+            # PERFECT: Small outperformance (0-3%)
+            score += 4
+        elif 3 < outperformance <= 5:
+            # GOOD: Moderate outperformance (3-5%)
+            score += 3
+        elif 5 < outperformance <= 8:
+            # OK: Getting extended (5-8%)
+            score += 2
+        elif 8 < outperformance <= 12:
+            # LATE: Already moved significantly (8-12%)
+            score += 1
+        elif outperformance > 12:
+            # TOO LATE: Big move already happened (>12%)
+            score += 0
+        elif -3 <= outperformance < 0:
+            # ACCEPTABLE: Slight underperformance is OK if RS turning
+            score += 2
+        else:
+            # Underperforming too much
+            score += 0
+        
+        # Component 3: Extended Move Penalty (0-2 points, or penalty)
+        # Check 20-day performance to avoid stocks that already ran
+        if stock_change_20d > 20:
+            # PENALTY: Stock already up >20% in 20 days - TOO LATE
+            score -= 3  # Subtract points
+        elif stock_change_20d > 15:
+            # Getting extended
+            score += 0
+        elif stock_change_20d > 10:
+            # Moderate move
+            score += 1
+        else:
+            # Fresh - hasn't moved much yet
+            score += 2
+        
+        # Ensure score doesn't go negative
+        score = max(0, score)
+        
+        # Signal triggers if score >= 7 (stricter threshold)
         signal_triggered = score >= 7
         
         details = {
             'rs_ratio_current': round(rs_current, 6),
             'rs_slope': round(rs_slope, 8),
+            'rs_slope_recent': round(rs_slope_recent, 8),
+            'rs_just_turned_positive': rs_just_turned_positive,
             'rs_change_pct': round(rs_change_pct, 2),
             'stock_change_pct': round(stock_change, 2),
             'spy_change_pct': round(spy_change, 2),
             'outperformance': round(outperformance, 2),
+            'stock_change_20d': round(stock_change_20d, 2),
             'rs_increasing': rs_slope > 0
         }
         
