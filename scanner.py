@@ -124,7 +124,10 @@ def print_stock_detail(stock):
     green_count = stock.get('step1_green_day_count', 0)
     
     # Determine quality rating
-    if red_vol_ratio < 0.5:
+    if red_vol_ratio < 0.20:
+        quality = "Outstanding - Extreme dry-up!"
+        quality_range = "<0.20x: Red days have less than 20% of average volume (RARE!)"
+    elif red_vol_ratio < 0.50:
         quality = "Excellent - Strong dry-up!"
         quality_range = "0.20-0.49x: Red days have 20-49% of average volume"
     elif red_vol_ratio < 0.7:
