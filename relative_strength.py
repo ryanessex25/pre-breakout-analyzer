@@ -153,8 +153,8 @@ def analyze_relative_strength(df, spy_df):
         # Ensure score doesn't go negative
         score = max(0, score)
         
-        # Signal triggers if score >= 7 (stricter threshold)
-        signal_triggered = score >= 7
+        # Signal triggers if score >= 8 (stricter threshold)
+        signal_triggered = score >= 8
         
         details = {
             'rs_ratio_current': round(rs_current, 6),

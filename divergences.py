@@ -111,25 +111,13 @@ def analyze_divergences(df):
             # TOO LATE - already overbought (0 points)
             score += 0  # We missed the early entry
         
-        # MACD component (0-3 points) - REWARD TURNING POINTS, NOT ESTABLISHED STRENGTH
+        # MACD component (0-3 points) - STRICT: ONLY REWARD EARLY SIGNAL
         if macd_improving_from_negative:
-            # PERFECT: Histogram negative but improving (catching the turn BEFORE it goes positive)
-            # Example: -0.8 yesterday, -0.3 today = improving by 0.5
-            improvement = current_histogram - prev_histogram
-            if improvement > 0.2:
-                score += 3  # Strong improvement
-            else:
-                score += 3  # Any improvement from negative is great
-        elif macd_histogram_positive and current_histogram < 0.5:
-            # GOOD: Just turned positive recently (small positive value)
-            # Example: +0.1 today (just crossed zero)
-            score += 2
-        elif macd_histogram_positive:
-            # OK: Already positive and established (late signal)
-            # Example: +2.5 today (been positive for a while)
-            score += 1
+            # ONLY THIS GETS POINTS: Histogram negative but improving (catching the turn BEFORE it goes positive)
+            # Example: -0.8 yesterday, -0.3 today = improving
+            score += 3
         else:
-            # Histogram negative and not improving (or getting worse)
+            # Everything else gets ZERO points (already positive = too late)
             score += 0
         
         # OBV component (0-2 points) - ACCUMULATION SIGNAL
@@ -139,8 +127,8 @@ def analyze_divergences(df):
             else:
                 score += 1
         
-        # Signal triggers if score >= 7 (stricter threshold for quality)
-        signal_triggered = score >= 7
+        # Signal triggers if score >= 8 (stricter threshold for quality)
+        signal_triggered = score >= 8
         
         details = {
             'rsi_current': round(df['RSI'].iloc[-1], 2),
