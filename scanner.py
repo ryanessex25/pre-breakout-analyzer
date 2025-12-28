@@ -60,10 +60,15 @@ def scan_single_stock(ticker, spy_df):
         'signals_met': signals_met,
         'total_score': total_score,
         
-        # Step 1 results
+        # Step 1 results - UPDATED with detailed volume breakdown
         'step1_signal': step1_result['signal'],
         'step1_score': step1_result['score'],
         'step1_red_volume_ratio': step1_result['details'].get('red_volume_ratio', 0),
+        'step1_red_day_avg_volume': step1_result['details'].get('red_day_avg_volume', 0),
+        'step1_green_day_avg_volume': step1_result['details'].get('green_day_avg_volume', 0),
+        'step1_20d_avg_volume': step1_result['details'].get('20d_avg_volume', 0),
+        'step1_red_day_count': step1_result['details'].get('red_day_count', 0),
+        'step1_green_day_count': step1_result['details'].get('green_day_count', 0),
         'step1_price_above_ema': step1_result['details'].get('price_above_ema_21', False),
         
         # Step 2 results - UPDATED with new MACD fields
@@ -107,9 +112,43 @@ def print_stock_detail(stock):
     print(f"\n📈 {stock['ticker']} - ${stock['current_price']:.2f} | Score: {stock['total_score']:.0f}/30 | {stock['signals_met']}/3 Signals")
     print("─" * 80)
     
-    # Step 1: Volume Dry-Up
+    # Step 1: Volume Dry-Up - ENHANCED with detailed breakdown
     print(f"  Step 1 - Volume Dry-Up ({stock['step1_score']:.0f}/10)")
-    print(f"     • Red day volume ratio: {stock['step1_red_volume_ratio']:.2f}x")
+    
+    # Get volume details from step1 results
+    red_vol_ratio = stock['step1_red_volume_ratio']
+    red_day_avg = stock.get('step1_red_day_avg_volume', 0)
+    green_day_avg = stock.get('step1_green_day_avg_volume', 0)
+    overall_avg = stock.get('step1_20d_avg_volume', 0)
+    red_count = stock.get('step1_red_day_count', 0)
+    green_count = stock.get('step1_green_day_count', 0)
+    
+    # Determine quality rating
+    if red_vol_ratio < 0.5:
+        quality = "Excellent - Strong dry-up!"
+        quality_range = "0.20-0.49x: Red days have 20-49% of average volume"
+    elif red_vol_ratio < 0.7:
+        quality = "Good - Decent dry-up"
+        quality_range = "0.50-0.69x: Red days have 50-69% of average volume"
+    elif red_vol_ratio < 0.9:
+        quality = "Okay - Some dry-up"
+        quality_range = "0.70-0.89x: Red days have 70-89% of average volume"
+    elif red_vol_ratio <= 1.1:
+        quality = "Weak - No real dry-up"
+        quality_range = "0.90-1.10x: Red days equal average volume"
+    else:
+        quality = "Bad - Heavy selling on red days"
+        quality_range = ">1.10x: Red days have MORE volume than average"
+    
+    print(f"     • Red volume ratio: {red_vol_ratio:.2f}x")
+    print(f"     • Quality: {quality}")
+    print(f"     • Interpretation: {quality_range}")
+    if overall_avg > 0:
+        print(f"     • Overall 20-day average volume: {overall_avg:,.0f} shares/day")
+    if red_count > 0:
+        print(f"     • Red days ({red_count} days): Average volume = {red_day_avg:,.0f} shares")
+    if green_count > 0:
+        print(f"     • Green days ({green_count} days): Average volume = {green_day_avg:,.0f} shares")
     print(f"     • Price above 21 EMA: {'Yes' if stock['step1_price_above_ema'] else 'No'}")
     print(f"     • Signal triggered: {'Yes' if stock['step1_signal'] else 'No'}")
     
@@ -303,7 +342,9 @@ def save_results(results):
     # Reorder columns for better readability - UPDATED with all new fields
     column_order = [
         'ticker', 'date', 'signals_met', 'total_score', 'current_price', 'volume',
-        'step1_signal', 'step1_score', 'step1_red_volume_ratio', 'step1_price_above_ema',
+        'step1_signal', 'step1_score', 'step1_red_volume_ratio', 
+        'step1_red_day_avg_volume', 'step1_green_day_avg_volume', 'step1_20d_avg_volume',
+        'step1_red_day_count', 'step1_green_day_count', 'step1_price_above_ema',
         'step2_signal', 'step2_score', 'step2_rsi', 'step2_rsi_divergence', 
         'step2_rsi_in_accumulation_zone',
         'step2_macd_histogram', 'step2_macd_histogram_prev',

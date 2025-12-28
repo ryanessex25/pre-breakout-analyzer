@@ -47,6 +47,18 @@ def analyze_volume_dryup(df):
         # Calculate ratio
         red_volume_ratio = red_day_avg_volume / avg_volume_20d if avg_volume_20d > 0 else 1
         
+        # Calculate red/green day counts and volumes for detailed breakdown
+        recent_data = df.tail(config.STEP1_LOOKBACK_PERIOD).copy()
+        recent_data['is_red'] = recent_data['Close'] < recent_data['Open']
+        recent_data['is_green'] = recent_data['Close'] >= recent_data['Open']
+        
+        red_days = recent_data[recent_data['is_red']]
+        green_days = recent_data[recent_data['is_green']]
+        
+        red_day_count = len(red_days)
+        green_day_count = len(green_days)
+        green_day_avg_volume = green_days['Volume'].mean() if len(green_days) > 0 else avg_volume_20d
+        
         # Check if price is above 21 EMA (last 3 days)
         recent_prices = df['Close'].tail(3)
         recent_ema = df['EMA_21'].tail(3)
@@ -69,13 +81,16 @@ def analyze_volume_dryup(df):
         if price_above_ema:
             score += 3
         
-        # Signal triggers if score >= 5
+        # Signal triggers if score >= 7
         signal_triggered = score >= 7
         
         details = {
             'red_day_avg_volume': round(red_day_avg_volume, 0),
+            'green_day_avg_volume': round(green_day_avg_volume, 0),
             '20d_avg_volume': round(avg_volume_20d, 0),
             'red_volume_ratio': round(red_volume_ratio, 3),
+            'red_day_count': red_day_count,
+            'green_day_count': green_day_count,
             'price_above_ema_21': price_above_ema,
             'current_price': round(df['Close'].iloc[-1], 2),
             'ema_21': round(df['EMA_21'].iloc[-1], 2)
