@@ -91,70 +91,62 @@ def analyze_relative_strength(df, spy_df):
         stock_change_20d = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-lookback_20d]) 
                            / aligned_df['stock_close'].iloc[-lookback_20d] * 100)
         
+        
         # Scoring logic (0-10) - FOCUS ON EARLY TURNING POINTS
         score = 0
         
-        # Component 1: RS Slope Turning Point (0-4 points)
+        """
+        Component 1: RS Slope Turning Point (0-4 points)
+            PERFECT: Just caught the turn from negative to positive
+            GOOD: Positive and accelerating recently
+            OK: Positive but not accelerating
+            EARLY: Almost turning positive (very small negative)
+            Negative slope - not ready yet
+        """
         if rs_just_turned_positive:
-            # PERFECT: Just caught the turn from negative to positive
             score += 4
         elif rs_slope > 0 and rs_slope_recent > rs_slope:
-            # GOOD: Positive and accelerating recently
             score += 3
         elif rs_slope > 0:
-            # OK: Positive but not accelerating
             score += 2
         elif rs_slope > -0.0001:
-            # EARLY: Almost turning positive (very small negative)
             score += 1
         else:
-            # Negative slope - not ready yet
             score += 0
         
-        # Component 2: Outperformance Sweet Spot (0-4 points)
-        # REWARD SMALL OUTPERFORMANCE, PENALIZE LARGE MOVES
+
+
+        """
+        Component 2: Outperformance Sweet Spot (0-2 points)
+            GOOD: Moderate outperformance (3-5%)
+            OK: Getting extended (5-8%)
+            LATE: Already moved significantly (8-12%)
+            TOO LATE: Big move already happened (>12%)        
+        """
         if 0 <= outperformance <= 3:
-            # PERFECT: Small outperformance (0-3%)
-            score += 4
+            score += 2
         elif 3 < outperformance <= 5:
-            # GOOD: Moderate outperformance (3-5%)
-            score += 3
-        elif 5 < outperformance <= 8:
-            # OK: Getting extended (5-8%)
-            score += 2
-        elif 8 < outperformance <= 12:
-            # LATE: Already moved significantly (8-12%)
-            score += 1
-        elif outperformance > 12:
-            # TOO LATE: Big move already happened (>12%)
-            score += 0
-        elif -3 <= outperformance < 0:
-            # ACCEPTABLE: Slight underperformance is OK if RS turning
-            score += 2
-        else:
-            # Underperforming too much
-            score += 0
-        
-        # Component 3: Extended Move Penalty (0-2 points, or penalty)
-        # Check 20-day performance to avoid stocks that already ran
-        if stock_change_20d > 20:
-            # PENALTY: Stock already up >20% in 20 days - TOO LATE
-            score -= 3  # Subtract points
-        elif stock_change_20d > 15:
-            # Getting extended
-            score += 0
-        elif stock_change_20d > 10:
-            # Moderate move
             score += 1
         else:
-            # Fresh - hasn't moved much yet
-            score += 2
+            score += 0
         
-        # Ensure score doesn't go negative
-        score = max(0, score)
+
+
+        """
+        Component 3: Extended Move Check
+            Check 20-day performance to avoid stocks that already ran
+            Sweet spot: Stock up 0-10% (fresh, early)
+            Either down (not ready) or up >10% (too late)
+        """
+        if 0 <= stock_change_20d <= 10:  
+            score += 4
+        else:
+            score += 0
+      
         
-        # Signal triggers if score >= 8 (stricter threshold)
-        signal_triggered = score >= 8
+        # Signal triggers if score >= 6 (Slightly more flexible threshold)
+        signal_triggered = score >= 6
+
         
         details = {
             'rs_ratio_current': round(rs_current, 6),

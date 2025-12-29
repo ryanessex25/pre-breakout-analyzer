@@ -111,24 +111,29 @@ def analyze_divergences(df):
             # TOO LATE - already overbought (0 points)
             score += 0  # We missed the early entry
         
-        # MACD component (0-3 points) - STRICT: ONLY REWARD EARLY SIGNAL
+
+        # MACD component (0-3 points) - Focus on turning points
         if macd_improving_from_negative:
-            # ONLY THIS GETS POINTS: Histogram negative but improving (catching the turn BEFORE it goes positive)
-            # Example: -0.8 yesterday, -0.3 today = improving
+           # Best: Histogram negative but improving (catching BEFORE the turn)
             score += 3
+        elif macd_histogram_positive and current_histogram < 0.2:
+           # Good: Just turned positive very recently (within small threshold)
+            score += 2
         else:
-            # Everything else gets ZERO points (already positive = too late)
+            # Everything else gets zero (already extended or not improving)
             score += 0
         
+
         # OBV component (0-2 points) - ACCUMULATION SIGNAL
         if obv_rising:
             if obv_slope > np.percentile(df['OBV'].diff(), 75):  # Strong accumulation
                 score += 2
             else:
                 score += 1
+
         
-        # Signal triggers if score >= 8 (stricter threshold for quality)
-        signal_triggered = score >= 8
+        # Signal triggers if score >= 7
+        signal_triggered = score >= 7
         
         details = {
             'rsi_current': round(df['RSI'].iloc[-1], 2),

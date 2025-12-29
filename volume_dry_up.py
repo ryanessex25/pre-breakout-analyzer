@@ -82,7 +82,7 @@ def analyze_volume_dryup(df):
             score += 3
         
         # Signal triggers if score >= 7
-        signal_triggered = score >= 7
+        signal_triggered = score >= 6
         
         details = {
             'red_day_avg_volume': round(red_day_avg_volume, 0),
