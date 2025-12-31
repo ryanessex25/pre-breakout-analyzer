@@ -78,10 +78,10 @@ def analyze_volume_dryup(df):
             score += 2
         
         # Price above EMA component (0-3 points)
-        if price_above_ema:
+        if score > 0 and price_above_ema:
             score += 3
         
-        # Signal triggers if score >= 7
+        # Signal triggers if score >= 6
         signal_triggered = score >= 6
         
         details = {
