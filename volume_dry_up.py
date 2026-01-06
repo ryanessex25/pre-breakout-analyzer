@@ -68,14 +68,22 @@ def analyze_volume_dryup(df):
         score = 0
         
         # Volume dry-up component (0-7 points)
+        # UPDATED: More realistic thresholds for individual stocks
+        # Real stocks rarely show extreme dry-up like ETFs, so reward ANY reduction
         if red_volume_ratio < 0.4:
-            score += 7
+            score += 7  # Extreme dry-up (very rare)
         elif red_volume_ratio < 0.5:
-            score += 6
+            score += 6  # Excellent dry-up
         elif red_volume_ratio < 0.6:
-            score += 4
+            score += 5  # Very good dry-up
         elif red_volume_ratio < 0.7:
-            score += 2
+            score += 4  # Good dry-up
+        elif red_volume_ratio < 0.8:
+            score += 3  # Decent dry-up
+        elif red_volume_ratio < 0.9:
+            score += 2  # Some dry-up
+        elif red_volume_ratio < 1.0:
+            score += 1  # Slight dry-up
         
         # Price above EMA component (0-3 points)
         if score > 0 and price_above_ema:

@@ -5,7 +5,6 @@ UPDATED: Focus on EARLY outperformance and turning points, not established stren
 """
 
 import pandas as pd
-import numpy as np
 import config
 from utils import calculate_slope
 

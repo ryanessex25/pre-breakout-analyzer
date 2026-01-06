@@ -7,7 +7,6 @@ import pandas as pd
 from datetime import datetime
 import time
 import os
-import sys
 import config
 from data_fetch import load_ticker_list, fetch_stock_data, fetch_spy_data
 from volume_dry_up import check_step1
@@ -33,6 +32,13 @@ def scan_single_stock(ticker, spy_df):
     
     if df is None or len(df) < 30:
         return None
+    
+    # ===== NEW: Filter out low-volume/illiquid stocks =====
+    # This prevents catching illiquid ETFs and penny stocks
+    avg_volume_20d = df['Volume'].tail(20).mean()
+    if avg_volume_20d < 500_000:  # Minimum 500K average daily volume
+        return None
+    # ======================================================
     
     # Run all three signal checks
     step1_result = check_step1(ticker, df)

@@ -10,7 +10,7 @@ TICKER_LIST_PATH = "ticker_list.txt"
 RESULTS_FOLDER = "results"
 
 # ===== SCANNING SETTINGS =====
-ALERT_THRESHOLD = 3  # Alert when stock meets 3 out of 3 signals
+ALERT_THRESHOLD = 2  # Alert when stock meets 3 out of 3 signals
 
 # ===== STEP 1: VOLUME DRY-UP THRESHOLDS =====
 STEP1_LOOKBACK_PERIOD = 20  # Days to calculate average volume
