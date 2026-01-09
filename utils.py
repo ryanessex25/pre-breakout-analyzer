@@ -1,5 +1,6 @@
 """
-Utility functions for technical indicators and calculations
+Utility functions for technical indicators and calculations.
+
 """
 
 import pandas as pd
