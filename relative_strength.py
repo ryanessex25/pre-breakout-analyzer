@@ -144,7 +144,7 @@ def analyze_relative_strength(df, spy_df):
       
         
         # Signal triggers if score >= 6 (Slightly more flexible threshold)
-        signal_triggered = score >= 6
+        signal_triggered = score >= 7
 
         
         details = {

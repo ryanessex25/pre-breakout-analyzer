@@ -1,11 +1,11 @@
-# Early Breakout Scanner 🚀
+# Early Breakout Scanner 
 
 A modular stock scanner focused on detecting **early breakout signals** before stocks make major moves. This scanner identifies stocks showing signs of institutional accumulation, momentum divergences, and relative strength...
 
 ---
-## 📋 Features
+## Features
 
-### Core Detection Signals (Steps 5-7)
+### Core Detection Signals 
 
 1. **Step 1: Volume Dry-Up During Pullback**
    - Detects pullbacks on light volume (no selling pressure)
@@ -31,7 +31,7 @@ A modular stock scanner focused on detecting **early breakout signals** before s
 
 ---
 
-## ⚙️ Configuration
+##  Configuration
 
 Edit `config.py` to customize:
 
@@ -40,25 +40,25 @@ ALERT_THRESHOLD = 2  # Alert when 2 out of 3 signals met
 
 
 ### Volume Dry-Up Settings
-STEP5_LOOKBACK_PERIOD = 20  # Days for volume average
-STEP5_RED_DAY_VOLUME_RATIO = 0.7  # Red day volume threshold
-STEP5_EMA_PERIOD = 21  # EMA support level
+STEP1_LOOKBACK_PERIOD = 20  # Days for volume average
+STEP1_RED_DAY_VOLUME_RATIO = 0.7  # Red day volume threshold
+STEP1_EMA_PERIOD = 21  # EMA support level
 
 
 ### Divergence Settings
-STEP6_RSI_PERIOD = 14
-STEP6_RSI_LOOKBACK = 5  # Days to check RSI trend
-STEP6_OBV_LOOKBACK = 5  # Days to check OBV slope
+STEP2_RSI_PERIOD = 14
+STEP2_RSI_LOOKBACK = 5  # Days to check RSI trend
+STEP2_OBV_LOOKBACK = 5  # Days to check OBV slope
 
 
 ### Relative Strength Settings
-STEP7_RS_LOOKBACK = 5  # Days for RS calculation
-STEP7_SPY_SYMBOL = "SPY"  # Benchmark
+STEP3_RS_LOOKBACK = 5  # Days for RS calculation
+STEP3_SPY_SYMBOL = "SPY"  # Benchmark
 
 
 ---
 
-## 🔄 Upgrading to Polygon.io
+##  Upgrading to Polygon.io
 
 When ready to upgrade from Yahoo Finance to Polygon:
 
@@ -68,12 +68,12 @@ When ready to upgrade from Yahoo Finance to Polygon:
 4. Keep all signal files unchanged (they're data-source agnostic)
 
 
-## 🎯 Scoring System
+## Scoring System
 
 Each signal scores **0-10 points**:
 
 - **Total Score Range**: 0-30 points
-- **Alert Threshold**: Stock must score ≥5 in at least 2 signals
+- **Alert Threshold**: Stock must score ≥6-7 in at least 2 signals
 - **Ranking**: Stocks ranked by total score (higher = stronger setup)
 
 ### Interpretation
