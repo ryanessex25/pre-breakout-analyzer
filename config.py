@@ -30,4 +30,4 @@ STEP3_RS_LOOKBACK = 5  # Days to calculate RS slope
 STEP3_SPY_SYMBOL = "SPY"  # Benchmark for relative strength
 
 # ===== DATA SETTINGS =====
-DATA_LOOKBACK_DAYS = 60  # Total days of historical data to fetch
+DATA_LOOKBACK_DAYS = 250  # Total days of historical data to fetch

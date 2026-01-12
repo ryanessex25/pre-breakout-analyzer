@@ -133,7 +133,7 @@ def analyze_divergences(df):
 
         
         # Signal triggers if score >= 7
-        signal_triggered = score >= 7
+        signal_triggered = score >= 6
         
         details = {
             'rsi_current': round(df['RSI'].iloc[-1], 2),

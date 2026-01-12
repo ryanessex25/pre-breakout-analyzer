@@ -13,66 +13,41 @@ from relative_strength import check_step3
 
 
 # ===== TEST CASES =====
-# Known breakouts from 2025 to validate against
+# Known breakouts from 2025-2026 to validate against
+# Currently focused on SLV - silver breakout
 TEST_CASES = [
     {
-        'ticker': 'CVNA',
-        'name': 'Carvana',
-        'breakout_start': '2025-11-21',
-        'breakout_end': '2025-12-11',
-        'start_price': 309,
-        'peak_price': 472,
-        'notes': 'Strong breakout, 52.8% gain in 3 weeks'
-    },
-    {
-        'ticker': 'TSLA',
-        'name': 'Tesla',
-        'breakout_start': '2025-11-20',
-        'breakout_end': '2025-12-17',
-        'start_price': 390,
-        'peak_price': 490,
-        'notes': 'Steady climb, 25.6% gain'
-    },
-    {
-        'ticker': 'ASTS',
-        'name': 'AST SpaceMobile',
-        'breakout_start': '2025-11-21',
-        'breakout_end': '2025-12-11',
-        'start_price': 51,
-        'peak_price': 85,
-        'notes': 'Explosive move, 66.7% gain in 3 weeks'
-    },
-    {
-        'ticker': 'SNDK',
-        'name': 'SanDisk',
-        'breakout_start': '2025-11-20',
-        'breakout_end': '2025-12-20',
-        'start_price': 200,
-        'peak_price': 360,
-        'notes': 'Consolidation around $200, then 80% breakout'
+        'ticker': 'SLV',
+        'name': 'iShares Silver Trust',
+        'breakout_start': '2025-12-01',   # Broke out in December
+        'breakout_end': '2025-12-20',     # Reached mid-70s
+        'start_price': 49,                # Top of consolidation range
+        'peak_price': 75,                 # Peak in mid-70s
+        'notes': 'Consolidation: mid-Oct to end-Nov 2025 range $42-$49, broke out Dec, reached mid-70s (+53%)'
     }
 ]
 
 
 def generate_scan_dates(breakout_date_str):
     """
-    Generate scan dates leading up to breakout
+    Generate DAILY scan dates for comprehensive analysis
+    
+    Strategy: Scan every single day for 60 days leading up to breakout
+    This shows exactly when signals first appeared during consolidation
     
     Args:
         breakout_date_str (str): Breakout date in 'YYYY-MM-DD' format
     
     Returns:
-        list: List of date strings to scan
+        list: List of date strings to scan (60 days before through breakout)
     """
     breakout_date = datetime.strptime(breakout_date_str, '%Y-%m-%d')
     
-    scan_dates = [
-        breakout_date - timedelta(days=14),  # 2 weeks before
-        breakout_date - timedelta(days=10),  # 10 days before
-        breakout_date - timedelta(days=7),   # 1 week before
-        breakout_date - timedelta(days=3),   # 3 days before
-        breakout_date                        # Day of breakout
-    ]
+    # Generate daily scan dates from 60 days before through breakout day
+    scan_dates = []
+    
+    for days_back in range(60, -1, -1):  # 60, 59, 58, ... 1, 0
+        scan_dates.append(breakout_date - timedelta(days=days_back))
     
     return [d.strftime('%Y-%m-%d') for d in scan_dates]
 
@@ -92,18 +67,39 @@ def run_scanner_on_date(ticker, as_of_date, spy_df):
     # Fetch stock data up to this date
     df = fetch_stock_data(ticker, days=90)
     
-    if df is None or len(df) < 30:
+    if df is None:
+        print(f"    ❌ fetch_stock_data returned None for {ticker} on {as_of_date}")
         return None
     
-    # Filter data to only include dates up to as_of_date
-    cutoff_date = pd.to_datetime(as_of_date)
-    df = df[df.index <= cutoff_date]
+    print(f"    📊 {as_of_date}: Fetched {len(df)} rows, range: {df.index[0].date()} to {df.index[-1].date()}")
     
     if len(df) < 30:
+        print(f"    ⚠️  Initial data insufficient ({len(df)} < 30)")
         return None
     
-    # Filter SPY data similarly
-    spy_filtered = spy_df[spy_df.index <= cutoff_date]
+    # Ensure timezone-naive for filtering
+    if df.index.tz is not None:
+        df.index = df.index.tz_localize(None)
+    
+    # Filter data to only include dates up to as_of_date
+    cutoff_date = pd.to_datetime(as_of_date).normalize()  # Remove time component
+    df = df[df.index.normalize() <= cutoff_date]
+    
+    print(f"    ✂️  After cutoff filter: {len(df)} rows remaining")
+    
+    if len(df) < 30:
+        print(f"    ❌ Post-filter insufficient ({len(df)} < 30 rows)")
+        return None
+    
+    # Filter SPY data similarly (ensure timezone-naive)
+    if spy_df.index.tz is not None:
+        spy_filtered = spy_df.copy()
+        spy_filtered.index = spy_filtered.index.tz_localize(None)
+    else:
+        spy_filtered = spy_df.copy()
+    
+    cutoff_date = pd.to_datetime(as_of_date).normalize()
+    spy_filtered = spy_filtered[spy_filtered.index.normalize() <= cutoff_date]
     
     if len(spy_filtered) < 30:
         return None
@@ -155,14 +151,15 @@ def run_scanner_on_date(ticker, as_of_date, spy_df):
     }
 
 
-def print_result_summary(result, breakout_date, days_before):
+def print_result_summary(result, breakout_date, days_diff, days_label):
     """
     Print formatted summary of a single scan result
     
     Args:
         result (dict): Scanner result
         breakout_date (str): Date of breakout
-        days_before (int): Days before breakout
+        days_diff (int): Days relative to breakout (negative = before, positive = after)
+        days_label (str): Human-readable label for timing
     """
     if result is None:
         print(f"  ⚠️  Insufficient data")
@@ -178,11 +175,7 @@ def print_result_summary(result, breakout_date, days_before):
     
     print(f"\n{result['date']}: {status_color} {status} ({result['signals_met']}/3 signals) - Score: {result['total_score']:.0f}/30")
     print(f"  Price: ${result['current_price']:.2f}")
-    
-    if days_before > 0:
-        print(f"  → {days_before} days before breakout")
-    elif days_before == 0:
-        print(f"  → Breakout day")
+    print(f"  → {days_label}")
     
     # Signal breakdown
     signals = []
@@ -236,7 +229,8 @@ def backtest_single_stock(test_case):
     # Generate scan dates
     scan_dates = generate_scan_dates(breakout_start)
     
-    print(f"\nScanning on {len(scan_dates)} dates leading up to breakout...")
+    print(f"\nScanning EVERY DAY for 60 days leading up to breakout ({len(scan_dates)} dates)...")
+    print("Strategy: Daily granularity to pinpoint exactly when signals appeared\n")
     
     # Fetch SPY data once
     spy_df = fetch_spy_data(days=120)
@@ -249,15 +243,29 @@ def backtest_single_stock(test_case):
     results = []
     breakout_date = datetime.strptime(breakout_start, '%Y-%m-%d')
     
+    failed_dates = 0
+    
     for scan_date in scan_dates:
         scan_date_obj = datetime.strptime(scan_date, '%Y-%m-%d')
-        days_before = (breakout_date - scan_date_obj).days
+        days_diff = (scan_date_obj - breakout_date).days
+        
+        if days_diff < 0:
+            days_label = f"{abs(days_diff)} days before breakout"
+        elif days_diff == 0:
+            days_label = "Breakout day"
+        else:
+            days_label = f"{days_diff} days into move"
         
         result = run_scanner_on_date(ticker, scan_date, spy_df)
         
         if result:
             results.append(result)
-            print_result_summary(result, breakout_start, days_before)
+            print_result_summary(result, breakout_start, days_diff, days_label)
+        else:
+            failed_dates += 1
+    
+    if failed_dates > 0:
+        print(f"\n⚠️  Warning: {failed_dates}/{len(scan_dates)} dates had insufficient data")
     
     # Summary
     print("\n" + "-"*80)
@@ -266,17 +274,32 @@ def backtest_single_stock(test_case):
     alerts = [r for r in results if r['alert_triggered']]
     
     if alerts:
+        # Find earliest alert
         earliest_alert = alerts[0]
         earliest_date = datetime.strptime(earliest_alert['date'], '%Y-%m-%d')
-        days_early = (breakout_date - earliest_date).days
+        days_diff = (earliest_date - breakout_date).days
         
         print(f"✅ Scanner caught this breakout!")
-        print(f"   First alert: {earliest_alert['date']} ({days_early} days before breakout)")
-        print(f"   Entry price: ${earliest_alert['current_price']:.2f}")
-        print(f"   Peak price: ${peak_price:.2f}")
         
-        entry_to_peak_gain = ((peak_price - earliest_alert['current_price']) / earliest_alert['current_price']) * 100
-        print(f"   Potential gain: +{entry_to_peak_gain:.1f}%")
+        if days_diff < 0:
+            print(f"   First alert: {earliest_alert['date']} ({abs(days_diff)} days BEFORE breakout)")
+            print(f"   Entry price: ${earliest_alert['current_price']:.2f}")
+            entry_to_peak_gain = ((peak_price - earliest_alert['current_price']) / earliest_alert['current_price']) * 100
+            print(f"   Peak price: ${peak_price:.2f}")
+            print(f"   Potential gain from alert: +{entry_to_peak_gain:.1f}%")
+        elif days_diff == 0:
+            print(f"   First alert: {earliest_alert['date']} (ON breakout day)")
+            print(f"   Entry price: ${earliest_alert['current_price']:.2f}")
+            entry_to_peak_gain = ((peak_price - earliest_alert['current_price']) / earliest_alert['current_price']) * 100
+            print(f"   Peak price: ${peak_price:.2f}")
+            print(f"   Potential gain from breakout day: +{entry_to_peak_gain:.1f}%")
+        else:
+            print(f"   First alert: {earliest_alert['date']} ({days_diff} days INTO the move)")
+            print(f"   Entry price: ${earliest_alert['current_price']:.2f}")
+            entry_to_peak_gain = ((peak_price - earliest_alert['current_price']) / earliest_alert['current_price']) * 100
+            print(f"   Peak price: ${peak_price:.2f}")
+            print(f"   Remaining gain from mid-move entry: +{entry_to_peak_gain:.1f}%")
+            print(f"   ⚠️  Scanner caught it late (during the rally, not before)")
         
         # Which signals triggered
         triggered_signals = []
@@ -288,10 +311,28 @@ def backtest_single_stock(test_case):
             triggered_signals.append("Rel. Strength")
         
         print(f"   Winning combo: {', '.join(triggered_signals)}")
+        
+        # Show all alert dates
+        if len(alerts) > 1:
+            print(f"\n   Total alerts triggered: {len(alerts)}")
+            for alert in alerts:
+                alert_date = datetime.strptime(alert['date'], '%Y-%m-%d')
+                days_diff = (alert_date - breakout_date).days
+                if days_diff < 0:
+                    timing = f"{abs(days_diff)}d before"
+                elif days_diff == 0:
+                    timing = "breakout day"
+                else:
+                    timing = f"{days_diff}d into move"
+                print(f"     • {alert['date']} ({timing}) - Score: {alert['total_score']:.0f}")
     else:
         print(f"❌ Scanner did NOT catch this breakout")
-        print(f"   Highest score: {max([r['total_score'] for r in results]):.0f}/30")
-        print(f"   Most signals: {max([r['signals_met'] for r in results])}/3")
+        if results:
+            print(f"   Highest score: {max([r['total_score'] for r in results]):.0f}/30")
+            print(f"   Most signals: {max([r['signals_met'] for r in results])}/3")
+        else:
+            print(f"   ⚠️  No valid scan results (data fetching issues)")
+            print(f"   Check: Does {ticker} have data for these dates?")
     
     print("="*80 + "\n")
     

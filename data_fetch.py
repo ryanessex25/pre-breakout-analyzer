@@ -24,8 +24,10 @@ def fetch_stock_data(ticker, days=None):
     
     try:
         # Calculate start date
+        # For backtesting: fetch enough history to support testing breakouts from months ago
+        # Even when scanning 60 days back, we need indicators that require 30+ days of prior data
         end_date = datetime.now()
-        start_date = end_date - timedelta(days=days + 10)  # Add buffer for indicators
+        start_date = end_date - timedelta(days=days + 120)  # Extra buffer for backtesting + indicators
         
         # Fetch data
         stock = yf.Ticker(ticker)

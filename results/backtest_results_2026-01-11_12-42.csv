@@ -1,0 +1,20 @@
+ticker,stock_name,scan_date,signals_met,total_score,alert_triggered,price,step1_signal,step1_score,step2_signal,step2_score,step3_signal,step3_score,caught_breakout,days_early
+SLV,iShares Silver Trust,2025-11-13,0,10,False,47.41999816894531,False,0,False,4,False,6,True,6
+SLV,iShares Silver Trust,2025-11-14,0,6,False,45.959999084472656,False,0,False,2,False,4,True,6
+SLV,iShares Silver Trust,2025-11-15,0,6,False,45.959999084472656,False,0,False,2,False,4,True,6
+SLV,iShares Silver Trust,2025-11-16,0,6,False,45.959999084472656,False,0,False,2,False,4,True,6
+SLV,iShares Silver Trust,2025-11-17,0,12,False,45.470001220703125,False,4,False,2,False,6,True,6
+SLV,iShares Silver Trust,2025-11-18,1,14,False,46.099998474121094,False,4,False,2,True,8,True,6
+SLV,iShares Silver Trust,2025-11-19,1,15,False,46.45000076293945,False,4,False,4,True,7,True,6
+SLV,iShares Silver Trust,2025-11-20,1,17,False,45.779998779296875,False,4,False,5,True,8,True,6
+SLV,iShares Silver Trust,2025-11-21,1,16,False,45.29999923706055,False,4,False,4,True,8,True,6
+SLV,iShares Silver Trust,2025-11-22,1,16,False,45.29999923706055,False,4,False,4,True,8,True,6
+SLV,iShares Silver Trust,2025-11-23,1,16,False,45.29999923706055,False,4,False,4,True,8,True,6
+SLV,iShares Silver Trust,2025-11-24,0,11,False,46.630001068115234,False,4,False,3,False,4,True,6
+SLV,iShares Silver Trust,2025-11-25,2,18,True,46.66999816894531,False,4,True,6,True,8,True,6
+SLV,iShares Silver Trust,2025-11-26,1,16,False,48.400001525878906,False,4,False,3,True,9,True,6
+SLV,iShares Silver Trust,2025-11-27,1,16,False,48.400001525878906,False,4,False,3,True,9,True,6
+SLV,iShares Silver Trust,2025-11-28,0,8,False,51.209999084472656,False,4,False,1,False,3,True,6
+SLV,iShares Silver Trust,2025-11-29,0,8,False,51.209999084472656,False,4,False,1,False,3,True,6
+SLV,iShares Silver Trust,2025-11-30,0,8,False,51.209999084472656,False,4,False,1,False,3,True,6
+SLV,iShares Silver Trust,2025-12-01,0,9,False,52.52000045776367,False,5,False,1,False,3,True,6

@@ -1,0 +1,24 @@
+ticker,stock_name,scan_date,signals_met,total_score,alert_triggered,price,step1_signal,step1_score,step2_signal,step2_score,step3_signal,step3_score,caught_breakout,days_early
+GS,Goldman Sachs,2025-11-11,1,10,False,806.3126831054688,False,0,False,0,True,10,True,8
+GS,Goldman Sachs,2025-11-12,0,5,False,834.831298828125,False,0,False,1,False,4,True,8
+GS,Goldman Sachs,2025-11-13,1,12,False,801.5264282226562,False,0,False,4,True,8,True,8
+GS,Goldman Sachs,2025-11-14,1,10,False,787.0083618164062,False,0,False,2,True,8,True,8
+GS,Goldman Sachs,2025-11-15,1,10,False,787.0083618164062,False,0,False,2,True,8,True,8
+GS,Goldman Sachs,2025-11-16,1,10,False,787.0083618164062,False,0,False,2,True,8,True,8
+GS,Goldman Sachs,2025-11-17,0,6,False,771.734130859375,False,0,False,2,False,4,True,8
+GS,Goldman Sachs,2025-11-18,0,6,False,772.470458984375,False,0,False,2,False,4,True,8
+GS,Goldman Sachs,2025-11-19,1,10,False,782.1126708984375,False,0,False,2,True,8,True,8
+GS,Goldman Sachs,2025-11-20,0,8,False,769.88330078125,False,0,False,3,False,5,True,8
+GS,Goldman Sachs,2025-11-21,0,8,False,770.211669921875,False,0,False,4,False,4,True,8
+GS,Goldman Sachs,2025-11-22,0,8,False,770.211669921875,False,0,False,4,False,4,True,8
+GS,Goldman Sachs,2025-11-23,0,8,False,770.211669921875,False,0,False,4,False,4,True,8
+GS,Goldman Sachs,2025-11-24,1,11,False,786.8093872070312,False,0,True,7,False,4,True,8
+GS,Goldman Sachs,2025-11-25,2,17,True,798.3621215820312,False,0,True,7,True,10,True,8
+GS,Goldman Sachs,2025-11-26,1,13,False,811.9845581054688,False,0,False,4,True,9,True,8
+GS,Goldman Sachs,2025-11-27,1,13,False,811.9845581054688,False,0,False,4,True,9,True,8
+GS,Goldman Sachs,2025-11-28,1,12,False,821.965087890625,False,0,False,4,True,8,True,8
+GS,Goldman Sachs,2025-11-29,1,12,False,821.965087890625,False,0,False,4,True,8,True,8
+GS,Goldman Sachs,2025-11-30,1,12,False,821.965087890625,False,0,False,4,True,8,True,8
+GS,Goldman Sachs,2025-12-01,1,12,False,806.8599853515625,False,0,False,4,True,8,True,8
+GS,Goldman Sachs,2025-12-02,1,11,False,815.2100219726562,False,0,False,3,True,8,True,8
+GS,Goldman Sachs,2025-12-03,1,13,False,836.5700073242188,False,0,False,3,True,10,True,8
