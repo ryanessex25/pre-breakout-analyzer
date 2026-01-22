@@ -2,6 +2,7 @@
 STEP 2: Momentum Divergences (RSI / MACD / OBV)
 Detects when indicators strengthen before price does (hidden accumulation)
 UPDATED: Focus on EARLY accumulation phase (RSI 40-65, not overbought)
+UPDATED: OBV uses 15-day lookback with slope + day-counting for consistency
 """
 
 import pandas as pd
@@ -17,7 +18,7 @@ def analyze_divergences(df):
     UPDATED CRITERIA FOR EARLY DETECTION:
     - RSI between 40-65 (building strength, not overbought)
     - MACD histogram negative but improving (turning point)
-    - OBV trending upward (accumulation)
+    - OBV trending upward with consistent daily increases (accumulation)
     - PENALIZE RSI > 70 (that's too late)
     
     Args:
@@ -74,8 +75,8 @@ def analyze_divergences(df):
         # Combined for backwards compatibility
         macd_turning_positive = macd_histogram_positive or macd_improving_from_negative
         
-        # OBV trend check
-        obv_slope = calculate_slope(df['OBV'], config.STEP2_OBV_LOOKBACK)
+        # OBV trend check (15-day lookback for better accumulation detection)
+        obv_slope = calculate_slope(df['OBV'], 15)
         obv_rising = obv_slope > 0
         
         # Get current RSI value
@@ -111,28 +112,28 @@ def analyze_divergences(df):
             # TOO LATE - already overbought (0 points)
             score += 0  # We missed the early entry
         
-
         # MACD component (0-3 points) - Focus on turning points
         if macd_improving_from_negative:
-           # Best: Histogram negative but improving (catching BEFORE the turn)
+            # Best: Histogram negative but improving (catching BEFORE the turn)
             score += 3
         elif macd_histogram_positive and current_histogram < 0.2:
-           # Good: Just turned positive very recently (within small threshold)
+            # Good: Just turned positive very recently (within small threshold)
             score += 2
         else:
             # Everything else gets zero (already extended or not improving)
             score += 0
         
-
-        # OBV component (0-2 points) - ACCUMULATION SIGNAL
-        if obv_rising:
-            if obv_slope > np.percentile(df['OBV'].diff(), 75):  # Strong accumulation
-                score += 2
-            else:
-                score += 1
-
+ 
+        if obv_rising: #Slope filter, Overall trend must be up
+            # Check consistency: how many days did OBV actually increase?
+            obv_increases = (df['OBV'].tail(15).diff() > 0).sum()
+            
+            if obv_increases >= 10:  
+                score += 2  
+            elif obv_increases >= 8:  
+                score += 1  
         
-        # Signal triggers if score >= 7
+        # Signal triggers if score >= 6
         signal_triggered = score >= 6
         
         details = {
