@@ -14,6 +14,7 @@ from divergences import check_step2
 from relative_strength import check_step3
 from discord_alert import send_discord_alert, send_summary_alert
 import scoring
+import report_generator
 
 
 def scan_single_stock(ticker, spy_df):
@@ -166,6 +167,11 @@ def run_scanner(limit=None, offset=0):
     
     # Save results to CSV
     save_results(results)
+    
+    # Generate detailed report for alerted stocks
+    if high_priority or watch_list:
+        print(f"\n📝 Generating detailed report...")
+        report_generator.generate_report(results)
     
     # Send Discord alerts
     alert_count = len(high_priority) + len(watch_list)

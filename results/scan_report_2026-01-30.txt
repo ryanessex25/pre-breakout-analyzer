@@ -1,0 +1,408 @@
+================================================================================
+EARLY BREAKOUT SCANNER - DETAILED REPORT
+================================================================================
+Generated: 2026-01-30 19:49:18
+Total Alerted Stocks: 6
+High Priority: 0
+Watch List: 6
+================================================================================
+
+================================================================================
+👀 BEP - $29.83 | 17 POINTS | RANK #1 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      17/35 points (49%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   8/12 points
+  RS Score:         6/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         0.912x (red days vs 20-day avg)
+  Red Day Avg Volume:       517,470 shares
+  Green Day Avg Volume:     617,440 shares
+  Volume Spread:            Green days 1.19x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 1.19x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (8/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              72.87
+  RSI Slope (5-day):        4.769 (rising)
+  RSI Zone:                 OVERBOUGHT ⚠️ (too late)
+
+  MACD Histogram:           0.1820
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          3 out of 5 days
+  OBV Quality:              Moderate accumulation
+
+  Breakdown:
+    • RSI divergence: Strong divergence (~4/4)
+    • RSI accumulation zone: 0/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~1/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (6/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00041664
+  RS Slope Quality:         Slightly positive
+
+  Outperformance vs SPY:    +5.63%
+  Outperformance Quality:   Strong outperformance
+
+  Breakdown:
+    • RS slope: Slightly positive (~2/4)
+    • Outperformance: Strong outperformance (~4/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $29.83
+  Current Volume:   1,236,297 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+👀 BEPC - $41.64 | 17 POINTS | RANK #2 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      17/35 points (49%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   8/12 points
+  RS Score:         6/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         0.951x (red days vs 20-day avg)
+  Red Day Avg Volume:       943,420 shares
+  Green Day Avg Volume:     1,039,892 shares
+  Volume Spread:            Green days 1.10x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 1.10x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (8/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              67.92
+  RSI Slope (5-day):        4.784 (rising)
+  RSI Zone:                 Getting extended (late)
+
+  MACD Histogram:           0.2465
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          3 out of 5 days
+  OBV Quality:              Moderate accumulation
+
+  Breakdown:
+    • RSI divergence: Strong divergence (~4/4)
+    • RSI accumulation zone: 0/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~1/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (6/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00055967
+  RS Slope Quality:         Slightly positive
+
+  Outperformance vs SPY:    +6.01%
+  Outperformance Quality:   Strong outperformance
+
+  Breakdown:
+    • RS slope: Slightly positive (~2/4)
+    • Outperformance: Strong outperformance (~4/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $41.64
+  Current Volume:   2,190,316 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+👀 BIIB - $179.89 | 17 POINTS | RANK #3 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      17/35 points (49%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   8/12 points
+  RS Score:         6/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         1.155x (red days vs 20-day avg)
+  Red Day Avg Volume:       1,803,625 shares
+  Green Day Avg Volume:     1,400,736 shares
+  Volume Spread:            Green days 0.78x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 0.78x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (8/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              41.03
+  RSI Slope (5-day):        -1.735 (falling)
+  RSI Zone:                 ACCUMULATION ZONE ✓ (ideal range)
+
+  MACD Histogram:           0.3055
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          5 out of 5 days
+  OBV Quality:              Excellent accumulation
+
+  Breakdown:
+    • RSI divergence: No divergence (~0/4)
+    • RSI accumulation zone: 2/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~3/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (6/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00236075
+  RS Slope Quality:         Moderately positive
+
+  Outperformance vs SPY:    +4.02%
+  Outperformance Quality:   Solid outperformance
+
+  Breakdown:
+    • RS slope: Moderately positive (~3/4)
+    • Outperformance: Solid outperformance (~3/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $179.89
+  Current Volume:   1,486,529 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+👀 BEKE - $18.72 | 15 POINTS | RANK #4 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      15/35 points (43%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   7/12 points
+  RS Score:         5/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         1.012x (red days vs 20-day avg)
+  Red Day Avg Volume:       5,410,238 shares
+  Green Day Avg Volume:     5,222,029 shares
+  Volume Spread:            Green days 0.97x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 0.97x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (7/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              67.07
+  RSI Slope (5-day):        2.514 (rising)
+  RSI Zone:                 Getting extended (late)
+
+  MACD Histogram:           0.1436
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          2 out of 5 days
+  OBV Quality:              Weak/no accumulation
+
+  Breakdown:
+    • RSI divergence: Strong divergence (~4/4)
+    • RSI accumulation zone: 0/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~0/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (5/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00037185
+  RS Slope Quality:         Slightly positive
+
+  Outperformance vs SPY:    +3.19%
+  Outperformance Quality:   Solid outperformance
+
+  Breakdown:
+    • RS slope: Slightly positive (~2/4)
+    • Outperformance: Solid outperformance (~3/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $18.72
+  Current Volume:   5,958,688 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+👀 BGC - $9.11 | 15 POINTS | RANK #5 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      15/35 points (43%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   10/12 points
+  RS Score:         2/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         0.972x (red days vs 20-day avg)
+  Red Day Avg Volume:       1,835,957 shares
+  Green Day Avg Volume:     1,918,573 shares
+  Volume Spread:            Green days 1.04x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 1.04x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (10/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              60.10
+  RSI Slope (5-day):        2.741 (rising)
+  RSI Zone:                 ACCUMULATION ZONE ✓ (ideal range)
+
+  MACD Histogram:           0.0100
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          3 out of 5 days
+  OBV Quality:              Moderate accumulation
+
+  Breakdown:
+    • RSI divergence: Strong divergence (~4/4)
+    • RSI accumulation zone: 2/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~1/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (2/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00001563
+  RS Slope Quality:         Slightly positive
+
+  Outperformance vs SPY:    +0.00%
+  Outperformance Quality:   Underperforming SPY
+
+  Breakdown:
+    • RS slope: Slightly positive (~2/4)
+    • Outperformance: Underperforming SPY (~0/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $9.11
+  Current Volume:   2,437,254 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+👀 BHP - $68.73 | 15 POINTS | RANK #6 | WATCH LIST
+================================================================================
+
+OVERALL SCORES:
+  Total Score:      15/35 points (43%)
+  Alert Level:      WATCH LIST
+  Volume Score:     3/15 points
+  Momentum Score:   8/12 points
+  RS Score:         4/8 points
+
+--------------------------------------------------------------------------------
+VOLUME METRICS (3/15 points)
+--------------------------------------------------------------------------------
+  Red Volume Ratio:         1.134x (red days vs 20-day avg)
+  Red Day Avg Volume:       5,146,195 shares
+  Green Day Avg Volume:     4,132,517 shares
+  Volume Spread:            Green days 0.80x heavier than red days
+  Price Above 21 EMA:       YES ✓
+
+  Breakdown:
+    • Red volume ratio: No meaningful dry-up (~0/10)
+    • Price above EMA: 3/3 points
+    • Red/green spread: 0/2 points (minimal 0.80x spread)
+
+--------------------------------------------------------------------------------
+MOMENTUM METRICS (8/12 points)
+--------------------------------------------------------------------------------
+  RSI Current:              69.00
+  RSI Slope (5-day):        1.888 (rising)
+  RSI Zone:                 Getting extended (late)
+
+  MACD Histogram:           0.3914
+  MACD Status:              POSITIVE ✓
+
+  OBV Days Rising:          4 out of 5 days
+  OBV Quality:              Good accumulation
+
+  Breakdown:
+    • RSI divergence: Moderate divergence (~3/4)
+    • RSI accumulation zone: 0/2 points
+    • MACD status: ~3/3 points
+    • OBV consistency: ~2/3 points
+
+--------------------------------------------------------------------------------
+RELATIVE STRENGTH METRICS (4/8 points)
+--------------------------------------------------------------------------------
+  RS Slope (5-day):         0.00056220
+  RS Slope Quality:         Slightly positive
+
+  Outperformance vs SPY:    +1.53%
+  Outperformance Quality:   Moderate outperformance
+
+  Breakdown:
+    • RS slope: Slightly positive (~2/4)
+    • Outperformance: Moderate outperformance (~2/4)
+
+--------------------------------------------------------------------------------
+PRICE & VOLUME INFO
+--------------------------------------------------------------------------------
+  Current Price:    $68.73
+  Current Volume:   5,691,058 shares
+  Date:             2026-01-30
+
+================================================================================
+
+================================================================================
+END OF REPORT
+================================================================================
