@@ -78,8 +78,10 @@ def scan_single_stock(ticker, spy_df):
         'obv_days_rising': momentum_metrics.get('obv_days_rising', 0),
         
         # Raw metrics - Relative Strength
-        'rs_slope': rs_metrics.get('rs_slope', 0),
-        'outperformance': rs_metrics.get('outperformance', 0),
+        'outperformance_short': rs_metrics.get('outperformance_short', 0),
+        'outperformance_long': rs_metrics.get('outperformance_long', 0),
+        'rs_slope_short': rs_metrics.get('rs_slope_short', 0),
+        'rs_slope_long': rs_metrics.get('rs_slope_long', 0),
         
         # Price info
         'current_price': df['Close'].iloc[-1],

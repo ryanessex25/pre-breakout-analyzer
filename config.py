@@ -27,7 +27,8 @@ STEP2_MACD_SLOW = 26
 STEP2_MACD_SIGNAL = 9
 
 # ===== STEP 3: RELATIVE STRENGTH THRESHOLDS =====
-STEP3_RS_LOOKBACK = 5  # Days to calculate RS slope
+STEP3_RS_LOOKBACK_SHORT = 10
+STEP3_RS_LOOKBACK_LONG = 60  #
 STEP3_SPY_SYMBOL = "SPY"  # Benchmark for relative strength
 
 # ===== DATA SETTINGS =====

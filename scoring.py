@@ -224,80 +224,95 @@ def calculate_momentum_score(metrics):
         'breakdown': breakdown
     }
 
-
 def calculate_relative_strength_score(metrics):
-    """
-    Calculate relative strength score (0-8 points)
-    
-    Args:
-        metrics (dict): Relative strength metrics
-            - rs_slope: float
-            - outperformance: float (percentage)
-    
-    Returns:
-        dict: {
-            'total_score': int (0-8),
-            'breakdown': dict with point details
-        }
-    """
     score = 0
     breakdown = {}
-    
-    # RS Slope (0-4 points)
-    rs_slope = metrics.get('rs_slope', 0)
-    
-    if rs_slope > 0.005:
-        slope_points = 4
-        slope_quality = "Strongly positive"
-    elif rs_slope > 0.002:
-        slope_points = 3
-        slope_quality = "Moderately positive"
-    elif rs_slope > 0:
-        slope_points = 2
-        slope_quality = "Slightly positive"
+
+    # --- Long-term RS Slope (0-2 points) ---
+    rs_slope_long = metrics.get('rs_slope_long', 0)
+
+    if rs_slope_long > 0.005:
+        long_slope_points = 2
+        long_slope_quality = "Strongly positive"
+    elif rs_slope_long > 0.002:
+        long_slope_points = 1
+        long_slope_quality = "Moderately positive"
     else:
-        slope_points = 0
-        slope_quality = "Negative"
-    
-    score += slope_points
-    breakdown['rs_slope'] = {
-        'points': slope_points,
-        'value': rs_slope,
-        'quality': slope_quality
+        long_slope_points = 0
+        long_slope_quality = "Flat or negative"
+
+    score += long_slope_points
+    breakdown['rs_slope_long'] = {
+        'points': long_slope_points,
+        'value': rs_slope_long,
+        'quality': long_slope_quality
     }
-    
-    # Outperformance vs SPY (0-4 points)
-    outperformance = metrics.get('outperformance', 0)
-    
-    if outperformance > 5:
-        outperf_points = 4
-        outperf_quality = "Strong outperformance"
-    elif outperformance > 3:
-        outperf_points = 3
-        outperf_quality = "Solid outperformance"
-    elif outperformance > 1:
-        outperf_points = 2
-        outperf_quality = "Moderate outperformance"
-    elif outperformance > 0:
-        outperf_points = 1
-        outperf_quality = "Slight outperformance"
+
+    # --- Long-term Outperformance vs SPY (0-2 points) ---
+    outperformance_long = metrics.get('outperformance_long', 0)
+
+    if outperformance_long > 10:
+        long_outperf_points = 2
+        long_outperf_quality = "Strong 3-month outperformance"
+    elif outperformance_long > 5:
+        long_outperf_points = 1
+        long_outperf_quality = "Moderate 3-month outperformance"
     else:
-        outperf_points = 0
-        outperf_quality = "Underperforming"
-    
-    score += outperf_points
-    breakdown['outperformance'] = {
-        'points': outperf_points,
-        'value': outperformance,
-        'quality': outperf_quality
+        long_outperf_points = 0
+        long_outperf_quality = "Underperforming or flat"
+
+    score += long_outperf_points
+    breakdown['outperformance_long'] = {
+        'points': long_outperf_points,
+        'value': outperformance_long,
+        'quality': long_outperf_quality
     }
-    
+
+    # --- Short-term RS Slope (0-2 points) ---
+    rs_slope_short = metrics.get('rs_slope_short', 0)
+
+    if rs_slope_short > 0.005:
+        short_slope_points = 2
+        short_slope_quality = "Strongly positive"
+    elif rs_slope_short > 0.002:
+        short_slope_points = 1
+        short_slope_quality = "Moderately positive"
+    else:
+        short_slope_points = 0
+        short_slope_quality = "Flat or negative"
+
+    score += short_slope_points
+    breakdown['rs_slope_short'] = {
+        'points': short_slope_points,
+        'value': rs_slope_short,
+        'quality': short_slope_quality
+    }
+
+    # --- Short-term Outperformance vs SPY (0-2 points) ---
+    outperformance_short = metrics.get('outperformance_short', 0)
+
+    if outperformance_short > 5:
+        short_outperf_points = 2
+        short_outperf_quality = "Strong 2-week outperformance"
+    elif outperformance_short > 2:
+        short_outperf_points = 1
+        short_outperf_quality = "Moderate 2-week outperformance"
+    else:
+        short_outperf_points = 0
+        short_outperf_quality = "Underperforming or flat"
+
+    score += short_outperf_points
+    breakdown['outperformance_short'] = {
+        'points': short_outperf_points,
+        'value': outperformance_short,
+        'quality': short_outperf_quality
+    }
+
     return {
         'total_score': score,
         'max_score': 8,
         'breakdown': breakdown
     }
-
 
 def calculate_total_score(volume_metrics, momentum_metrics, rs_metrics):
     """

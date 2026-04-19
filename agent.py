@@ -24,9 +24,14 @@ Signal Scores:
 
 Raw Metrics:
 - RSI current: {result['rsi_current']:.1f}
-- Outperformance vs SPY: {result['outperformance']:.2f}%
 - Price above 21 EMA: {result['price_above_ema']}
 - OBV days rising: {result['obv_days_rising']}/5
+
+Relative Strength vs SPY:
+- Short-term outperformance (2 weeks): {result['outperformance_short']:.2f}%
+- Long-term outperformance (3 months): {result['outperformance_long']:.2f}%
+- Short-term RS slope: {result['rs_slope_short']:.6f}
+- Long-term RS slope: {result['rs_slope_long']:.6f}
 
 Return your response in exactly this format:
 Decision: BUY or PASS
@@ -37,7 +42,6 @@ Target: $
 Reasoning:
 Risks:
 """
-
     message = client.messages.create(
         model="claude-opus-4-6",
         max_tokens=1024,
