@@ -6,7 +6,8 @@ Configuration file for Early Breakout Scanner
 DISCORD_WEBHOOK_URL = "https://canary.discord.com/api/webhooks/1451719046990135507/ewPUTmwI5HMTQtQEM2ZA-ZrnOe7bSMqorvKFI6iwwhz1g1XyYimjg0jkAukhnYff0zxY"  # Replace with your actual webhook URL
 
 # ===== FILE PATHS =====
-TICKER_LIST_PATH = "ticker_list.txt"
+TICKER_LIST_PATH = "pre-breakout analyzer/ticker_list.txt"
+
 RESULTS_FOLDER = "results"
 
 # ===== SCANNING SETTINGS =====
