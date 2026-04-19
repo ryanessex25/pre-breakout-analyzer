@@ -1,4 +1,4 @@
-from scanner import run_scanner, scan_single_stock
+from scanner import scan_single_stock
 from data_fetch import load_ticker_list, fetch_spy_data
 from agent import run_agent
 from logger import log_decision
