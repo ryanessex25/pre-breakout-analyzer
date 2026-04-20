@@ -48,7 +48,7 @@ def main():
     results = []
     for ticker in tickers:
         result = scan_single_stock(ticker, spy_df)
-        if result and result['alert_level'] != 'skip':
+        if result:
             results.append(result)
 
     print(f"\nScanner found {len(results)} results above threshold")

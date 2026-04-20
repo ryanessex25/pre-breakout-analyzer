@@ -1,0 +1,7 @@
+date,ticker,alert_level,total_score,volume_score,momentum_score,rs_score,rsi_current,obv_days_rising,price_above_ema,outperformance_short,outperformance_long,current_price,volume
+2026-04-19,A,skip,9,3,6,0,61.53,3,True,-1.65,-15.24,121.87000274658203,4012300
+2026-04-19,AA,skip,5,3,2,0,47.07,2,True,-15.36,0.75,65.62000274658203,10622300
+2026-04-19,AAAU,skip,10,3,7,0,54.73,2,True,-3.5,-4.67,47.88999938964844,1486400
+2026-04-19,A,skip,13,3,6,0,61.53,3,True,-1.65,-15.24,121.87000274658203,4012300
+2026-04-19,AA,skip,8,3,2,0,47.07,2,True,-15.36,0.75,65.62000274658203,10622300
+2026-04-19,AAAU,skip,17,3,7,0,54.73,2,True,-3.5,-4.67,47.88999938964844,1486400

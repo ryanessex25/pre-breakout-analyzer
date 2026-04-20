@@ -224,6 +224,105 @@ def calculate_momentum_score(metrics):
         'breakdown': breakdown
     }
 
+def calculate_compression_score(metrics):
+    """
+    Calculate compression-based score (0-15 points)
+    """
+    score = 0
+    breakdown = {}
+
+    # --- ATR Contracting (0-6 points) ---
+    atr_contracting = metrics.get('atr_contracting', False)
+    atr_today = metrics.get('atr_today', None)
+    atr_lookback = metrics.get('atr_lookback', None)
+
+    if atr_contracting and atr_today and atr_lookback:
+        compression_ratio = atr_today / atr_lookback
+        if compression_ratio < 0.50:
+            atr_points = 6
+            atr_quality = "Extreme compression"
+        elif compression_ratio < 0.60:
+            atr_points = 5
+            atr_quality = "Strong compression"
+        elif compression_ratio < 0.70:
+            atr_points = 4
+            atr_quality = "Moderate compression"
+        else:
+            atr_points = 2
+            atr_quality = "Slight compression"
+    else:
+        atr_points = 0
+        atr_quality = "No compression"
+
+    score += atr_points
+    breakdown['atr_compression'] = {
+        'points': atr_points,
+        'contracting': atr_contracting,
+        'quality': atr_quality
+    }
+
+    # --- 52-Week High Proximity (0-5 points) ---
+    pct_from_52w = metrics.get('pct_from_52w_high', 1.0)
+
+    if pct_from_52w is None:
+        w52_points = 0
+        w52_quality = "No data"
+    elif pct_from_52w <= 0.05:
+        w52_points = 5
+        w52_quality = "Within 5% of 52w high"
+    elif pct_from_52w <= 0.10:
+        w52_points = 4
+        w52_quality = "Within 10% of 52w high"
+    elif pct_from_52w <= 0.15:
+        w52_points = 3
+        w52_quality = "Within 15% of 52w high"
+    elif pct_from_52w <= 0.20:
+        w52_points = 1
+        w52_quality = "Within 20% of 52w high"
+    else:
+        w52_points = 0
+        w52_quality = "Far from 52w high"
+
+    score += w52_points
+    breakdown['week_52_proximity'] = {
+        'points': w52_points,
+        'pct_from_52w_high': pct_from_52w,
+        'quality': w52_quality
+    }
+
+    # --- Near Recent High (0-4 points) ---
+    near_recent_high = metrics.get('near_recent_high', False)
+    pct_from_high_10d = metrics.get('pct_from_high_10d', None)
+    pct_from_high_20d = metrics.get('pct_from_high_20d', None)
+
+    if near_recent_high:
+        # Both timeframes near high is stronger than just one
+        pct_10d_near = pct_from_high_10d is not None and pct_from_high_10d <= 0.03
+        pct_20d_near = pct_from_high_20d is not None and pct_from_high_20d <= 0.03
+
+        if pct_10d_near and pct_20d_near:
+            near_points = 4
+            near_quality = "Near both 10d and 20d highs"
+        else:
+            near_points = 2
+            near_quality = "Near one recent high"
+    else:
+        near_points = 0
+        near_quality = "Not near recent high"
+
+    score += near_points
+    breakdown['near_recent_high'] = {
+        'points': near_points,
+        'near_high': near_recent_high,
+        'quality': near_quality
+    }
+
+    return {
+        'total_score': score,
+        'max_score': 15,
+        'breakdown': breakdown
+    }
+
 def calculate_relative_strength_score(metrics):
     score = 0
     breakdown = {}
@@ -314,43 +413,25 @@ def calculate_relative_strength_score(metrics):
         'breakdown': breakdown
     }
 
-def calculate_total_score(volume_metrics, momentum_metrics, rs_metrics):
-    """
-    Calculate total cumulative score from all metrics
+def calculate_total_score(volume_metrics, momentum_metrics, rs_metrics, compression_metrics):
     
-    Args:
-        volume_metrics (dict): Raw volume metrics
-        momentum_metrics (dict): Raw momentum metrics
-        rs_metrics (dict): Raw relative strength metrics
-    
-    Returns:
-        dict: {
-            'total_score': int (0-35),
-            'volume_score': dict,
-            'momentum_score': dict,
-            'rs_score': dict,
-            'alert_level': str ('high_priority', 'watch_list', 'skip')
-        }
-    """
-    
-    # Calculate individual category scores
     volume_score = calculate_volume_score(volume_metrics)
     momentum_score = calculate_momentum_score(momentum_metrics)
     rs_score = calculate_relative_strength_score(rs_metrics)
-    
-    # Calculate total
+    compression_score = calculate_compression_score(compression_metrics)
+
     total = (
         volume_score['total_score'] +
         momentum_score['total_score'] +
-        rs_score['total_score']
+        rs_score['total_score'] +
+        compression_score['total_score']
     )
-    
-    # Determine alert level
-    if total >= 20:
+
+    if total >= 30:
         alert_level = 'high_priority'
         alert_emoji = '✅'
         alert_text = 'STRONG SETUP'
-    elif total >= 15:
+    elif total >= 22:
         alert_level = 'watch_list'
         alert_emoji = '👀'
         alert_text = 'WATCH LIST'
@@ -358,13 +439,14 @@ def calculate_total_score(volume_metrics, momentum_metrics, rs_metrics):
         alert_level = 'skip'
         alert_emoji = '⏸️'
         alert_text = 'SKIP'
-    
+
     return {
         'total_score': total,
-        'max_score': 35,
+        'max_score': 50,
         'volume_score': volume_score,
         'momentum_score': momentum_score,
         'rs_score': rs_score,
+        'compression_score': compression_score,
         'alert_level': alert_level,
         'alert_emoji': alert_emoji,
         'alert_text': alert_text

@@ -4,12 +4,13 @@ Runs all signal checks on a single stock and returns scored result
 """
 
 from datetime import datetime
-import config
 from data_fetch import fetch_stock_data
 from volume_dry_up import check_step1
 from divergences import check_step2
 from relative_strength import check_step3
 import scoring
+from compression import check_compression
+
 
 
 def scan_single_stock(ticker, spy_df):
@@ -36,11 +37,15 @@ def scan_single_stock(ticker, spy_df):
     volume_metrics = check_step1(ticker, df)
     momentum_metrics = check_step2(ticker, df)
     rs_metrics = check_step3(ticker, df, spy_df)
+    compression_metrics = check_compression(ticker, df)
+
 
     score_result = scoring.calculate_total_score(
         volume_metrics,
         momentum_metrics,
-        rs_metrics
+        rs_metrics,
+        compression_metrics
+
     )
 
     return {
@@ -54,6 +59,7 @@ def scan_single_stock(ticker, spy_df):
         'volume_score': score_result['volume_score']['total_score'],
         'momentum_score': score_result['momentum_score']['total_score'],
         'rs_score': score_result['rs_score']['total_score'],
+        'compression_score': score_result['compression_score']['total_score'],
 
         # Raw metrics - Volume
         'red_volume_ratio': volume_metrics.get('red_volume_ratio', 0),
@@ -75,5 +81,14 @@ def scan_single_stock(ticker, spy_df):
 
         # Price info
         'current_price': df['Close'].iloc[-1],
-        'volume': df['Volume'].iloc[-1]
+        'volume': df['Volume'].iloc[-1],
+
+        # Compression metrics
+        'atr_contracting': compression_metrics.get('atr_contracting', False),
+        'atr_today': compression_metrics.get('atr_today', None),
+        'near_recent_high': compression_metrics.get('near_recent_high', False),
+        'pct_from_high_10d': compression_metrics.get('pct_from_high_10d', None),
+        'pct_from_52w_high': compression_metrics.get('pct_from_52w_high', None),
+        'near_52w_high': compression_metrics.get('near_52w_high', False),
+        'week_52_high': compression_metrics.get('week_52_high', None)
     }
