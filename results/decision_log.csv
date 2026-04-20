@@ -1,0 +1,7 @@
+date,ticker,total_score,decision,confidence,entry_zone,stop_loss,target,reasoning,outcome
+2026-04-19 20:20:19,A,7,PASS,2,$—,$—,$—,,
+2026-04-19 20:20:19,AA,5,PASS,2,$—,$—,$—,,
+2026-04-19 20:20:19,AAAU,9,PASS,2,$—,$—,$—,,
+2026-04-19 20:22:05,A,7,PASS,2,$---,$---,$---,,
+2026-04-19 20:22:06,AA,5,PASS,2,$—,$—,$—,,
+2026-04-19 20:22:06,AAAU,9,PASS,2,$--,$--,$--,,
