@@ -20,7 +20,8 @@ Signal Scores:
 - Volume dry-up: {result['volume_score']}/15
 - Momentum divergence: {result['momentum_score']}/12
 - Relative strength vs SPY: {result['rs_score']}/8
-- Total score: {result['total_score']}/35
+- Compression: {result['compression_score']}/15
+- Total score: {result['total_score']}/50
 
 Raw Metrics:
 - RSI current: {result['rsi_current']:.1f}
@@ -33,6 +34,14 @@ Relative Strength vs SPY:
 - Short-term RS slope: {result['rs_slope_short']:.6f}
 - Long-term RS slope: {result['rs_slope_long']:.6f}
 
+Compression:
+- ATR contracting: {result['atr_contracting']}
+- ATR today: {f"${result['atr_today']:.2f}" if result['atr_today'] else 'N/A'}
+- Near recent high (10d/20d): {result['near_recent_high']}
+- % from 10d high: {f"{result['pct_from_high_10d']*100:.1f}%" if result['pct_from_high_10d'] else 'N/A'}
+- 52-week high: {f"${result['week_52_high']:.2f}" if result['week_52_high'] else 'N/A'}
+- % from 52w high: {f"{result['pct_from_52w_high']*100:.1f}%" if result['pct_from_52w_high'] else 'N/A'}
+
 Return your response in exactly this format:
 Decision: BUY or PASS
 Confidence: 1-10
@@ -42,6 +51,7 @@ Target: $
 Reasoning:
 Risks:
 """
+    
     message = client.messages.create(
         model="claude-opus-4-6",
         max_tokens=1024,
