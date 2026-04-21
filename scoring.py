@@ -22,8 +22,9 @@ def calculate_volume_score(metrics):
         metrics (dict): Volume metrics from volume_dry_up analysis
             - red_volume_ratio: float
             - price_above_ema: bool
-            - red_day_avg_volume: float
-            - green_day_avg_volume: float
+            - red_day_volume_slope: float
+            - red_day_stepdown_count: int
+            - red_day_count: int
     
     Returns:
         dict: {
@@ -73,32 +74,32 @@ def calculate_volume_score(metrics):
         'value': price_above_ema
     }
     
-    # Red/Green Volume Spread (0-2 points)
-    red_avg = metrics.get('red_day_avg_volume', 0)
-    green_avg = metrics.get('green_day_avg_volume', 1)
-    
-    if red_avg > 0 and green_avg > 0:
-        spread_ratio = green_avg / red_avg
-        
-        if spread_ratio > 2.0:
-            spread_points = 2
-            spread_quality = "Huge spread"
-        elif spread_ratio > 1.5:
-            spread_points = 1
-            spread_quality = "Good spread"
-        else:
-            spread_points = 0
-            spread_quality = "Minimal spread"
+    # Red Day Volume Trend (0-2 points)
+    slope = metrics.get('red_day_volume_slope', 0)
+    stepdown_count = metrics.get('red_day_stepdown_count', 0)
+    red_day_count = metrics.get('red_day_count', 0)
+    max_stepdowns = red_day_count - 1 if red_day_count > 1 else 1
+    stepdown_ratio = stepdown_count / max_stepdowns if max_stepdowns > 0 else 0
+
+    slope_declining = slope < 0
+    stepdown_strong = stepdown_ratio >= 0.75
+
+    if slope_declining and stepdown_strong:
+        trend_points = 2
+        trend_quality = "Both slope and stepdown confirming"
+    elif slope_declining or stepdown_strong:
+        trend_points = 1
+        trend_quality = "One signal present"
     else:
-        spread_points = 0
-        spread_ratio = 0
-        spread_quality = "No data"
-    
-    score += spread_points
-    breakdown['red_green_spread'] = {
-        'points': spread_points,
-        'ratio': spread_ratio,
-        'quality': spread_quality
+        trend_points = 0
+        trend_quality = "No declining trend"
+
+    score += trend_points
+    breakdown['red_day_volume_trend'] = {
+        'points': trend_points,
+        'slope': slope,
+        'stepdown_ratio': round(stepdown_ratio, 2),
+        'quality': trend_quality
     }
     
     return {
@@ -106,7 +107,6 @@ def calculate_volume_score(metrics):
         'max_score': 15,
         'breakdown': breakdown
     }
-
 
 def calculate_momentum_score(metrics):
     """

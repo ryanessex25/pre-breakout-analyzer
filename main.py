@@ -5,6 +5,8 @@ from scanner import scan_single_stock
 from data_fetch import load_ticker_list, fetch_spy_data
 from agent import run_agent
 from logger import log_decision
+import argparse
+
 
 
 SCAN_LOG_FILE = "results/scan_results.csv"
@@ -37,12 +39,12 @@ def save_scan_results(results):
     print(f"💾 Scan results saved to {SCAN_LOG_FILE}")
 
 
-def main():
+def main(limit=5, offset=0):
     # Fetch SPY data
     spy_df = fetch_spy_data()
 
     # Load tickers
-    tickers = load_ticker_list()[:5]
+    tickers = load_ticker_list()[offset:offset+limit]
 
     # Scan stocks
     results = []
@@ -69,4 +71,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--limit', type=int, default=5)
+    parser.add_argument('--offset', type=int, default=0)
+    args = parser.parse_args()
+    main(limit=args.limit, offset=args.offset)
