@@ -8,7 +8,6 @@ from logger import log_decision
 import argparse
 
 
-
 SCAN_LOG_FILE = "results/scan_results.csv"
 
 
@@ -21,10 +20,21 @@ def save_scan_results(results):
     file_exists = os.path.exists(SCAN_LOG_FILE)
 
     fieldnames = [
-        'date', 'ticker', 'alert_level', 'total_score',
-        'volume_score', 'momentum_score', 'rs_score',
-        'rsi_current', 'obv_days_rising', 'price_above_ema',
+        'date', 'ticker',
+        # Volume
+        'red_volume_ratio', 'price_above_ema', 'red_day_avg_volume',
+        'red_day_volume_slope', 'red_day_stepdown_count', 'red_day_count',
+        # Momentum
+        'rsi_current', 'rsi_slope', 'price_slope',
+        'macd_histogram', 'macd_histogram_prev', 'obv_days_rising',
+        # Relative Strength
         'outperformance_short', 'outperformance_long',
+        'rs_slope_short', 'rs_slope_long',
+        # Compression
+        'atr_contracting', 'atr_today', 'atr_lookback',
+        'near_recent_high', 'pct_from_high_10d', 'pct_from_high_20d',
+        'pct_from_52w_high', 'near_52w_high', 'week_52_high',
+        # Price
         'current_price', 'volume'
     ]
 
@@ -36,7 +46,7 @@ def save_scan_results(results):
             result['date'] = datetime.now().strftime('%Y-%m-%d')
             writer.writerow(result)
 
-    print(f"💾 Scan results saved to {SCAN_LOG_FILE}")
+    print(f"Scan results saved to {SCAN_LOG_FILE}")
 
 
 def main(limit=5, offset=0):
@@ -53,7 +63,7 @@ def main(limit=5, offset=0):
         if result:
             results.append(result)
 
-    print(f"\nScanner found {len(results)} results above threshold")
+    print(f"\nScanner found {len(results)} results")
 
     # Save raw scan results
     save_scan_results(results)
@@ -65,7 +75,7 @@ def main(limit=5, offset=0):
 
     # Log each decision
     for d in decisions:
-        log_decision(d['ticker'], d['score'], d['decision'])
+        log_decision(d['ticker'], d['decision'])
 
     print(f"\nDone. Claude analyzed {len(decisions)} stocks.")
 
