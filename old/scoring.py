@@ -25,7 +25,7 @@ def calculate_volume_score(metrics):
             - red_day_volume_slope: float
             - red_day_stepdown_count: int
             - red_day_count: int
-    
+
     Returns:
         dict: {
             'total_score': int (0-15),
