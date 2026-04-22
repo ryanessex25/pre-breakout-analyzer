@@ -26,7 +26,6 @@ def log_decision(ticker, score, decision):
     row = {
         'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'ticker': ticker,
-        'total_score': score,
         'decision': parsed.get('Decision', ''),
         'confidence': parsed.get('Confidence', ''),
         'entry_zone': parsed.get('Entry zone', ''),
