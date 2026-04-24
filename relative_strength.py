@@ -5,7 +5,7 @@ Extracts relative strength metrics vs SPY - no scoring logic
 
 import pandas as pd
 import config
-from utils import calculate_slope
+from utility_calculations import calculate_slope
 
 
 def analyze_relative_strength(df, spy_df):
@@ -30,7 +30,7 @@ def analyze_relative_strength(df, spy_df):
                 'outperformance_long': 0
             }
         
-        min_required = config.STEP3_RS_LOOKBACK_LONG + 5
+        min_required = config.RS_LOOKBACK_LONG + 5
         if len(df) < min_required or len(spy_df) < min_required:
             return {
                 'error': 'Insufficient data',
@@ -58,22 +58,22 @@ def analyze_relative_strength(df, spy_df):
         # Calculate RS ratio (Stock / SPY)
         aligned_df['rs_ratio'] = aligned_df['stock_close'] / aligned_df['spy_close']
         
-        # --- Short-term RS (10 days / 2 weeks) ---
-        rs_slope_short = calculate_slope(aligned_df['rs_ratio'], config.STEP3_RS_LOOKBACK_SHORT)
+        # Short-term RS (10 days / 2 weeks)
+        rs_slope_short = calculate_slope(aligned_df['rs_ratio'], config.RS_LOOKBACK_SHORT)
         
-        stock_change_short = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK_SHORT]) 
-                              / aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK_SHORT] * 100)
-        spy_change_short = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK_SHORT]) 
-                            / aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK_SHORT] * 100)
+        stock_change_short = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.RS_LOOKBACK_SHORT]) 
+                              / aligned_df['stock_close'].iloc[-config.RS_LOOKBACK_SHORT] * 100)
+        spy_change_short = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.RS_LOOKBACK_SHORT]) 
+                            / aligned_df['spy_close'].iloc[-config.RS_LOOKBACK_SHORT] * 100)
         outperformance_short = stock_change_short - spy_change_short
 
-        # --- Long-term RS (60 days / 3 months) ---
-        rs_slope_long = calculate_slope(aligned_df['rs_ratio'], config.STEP3_RS_LOOKBACK_LONG)
+        #  Long-term RS (60 days / 3 months) 
+        rs_slope_long = calculate_slope(aligned_df['rs_ratio'], config.RS_LOOKBACK_LONG)
 
-        stock_change_long = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK_LONG]) 
-                             / aligned_df['stock_close'].iloc[-config.STEP3_RS_LOOKBACK_LONG] * 100)
-        spy_change_long = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK_LONG]) 
-                           / aligned_df['spy_close'].iloc[-config.STEP3_RS_LOOKBACK_LONG] * 100)
+        stock_change_long = ((aligned_df['stock_close'].iloc[-1] - aligned_df['stock_close'].iloc[-config.RS_LOOKBACK_LONG]) 
+                             / aligned_df['stock_close'].iloc[-config.RS_LOOKBACK_LONG] * 100)
+        spy_change_long = ((aligned_df['spy_close'].iloc[-1] - aligned_df['spy_close'].iloc[-config.RS_LOOKBACK_LONG]) 
+                           / aligned_df['spy_close'].iloc[-config.RS_LOOKBACK_LONG] * 100)
         outperformance_long = stock_change_long - spy_change_long
 
         return {
@@ -93,7 +93,17 @@ def analyze_relative_strength(df, spy_df):
         }
 
 
-def check_step3(ticker, df, spy_df):
+def check_relative_strength(ticker, df, spy_df):
+    """
+    Wrapper function for momentum analysis
+    
+    Args:
+        ticker (str): Stock symbol
+        df (pd.DataFrame): OHLCV data
+    
+    Returns:
+        dict: Momentum metrics with ticker
+    """
     metrics = analyze_relative_strength(df, spy_df)
     metrics['ticker'] = ticker
     return metrics

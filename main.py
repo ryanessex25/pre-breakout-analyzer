@@ -7,6 +7,8 @@ from agent import run_agent
 from logger import log_decision
 import argparse
 
+# The orchestrator
+# -----------------
 
 SCAN_LOG_FILE = "results/scan_results.csv"
 

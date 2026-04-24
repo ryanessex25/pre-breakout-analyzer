@@ -4,7 +4,6 @@ This module can be easily swapped to Polygon.io later
 """
 
 import yfinance as yf
-import pandas as pd
 from datetime import datetime, timedelta
 import config
 
@@ -66,6 +65,7 @@ def fetch_spy_data(days=None):
         pd.DataFrame: SPY OHLCV data
     """
     return fetch_stock_data(config.STEP3_SPY_SYMBOL, days)
+
 
 
 def load_ticker_list(filepath=None):

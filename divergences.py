@@ -3,10 +3,9 @@ Momentum Analysis Module
 Extracts momentum metrics (RSI, MACD, OBV) - no scoring logic
 """
 
-import pandas as pd
-import numpy as np
+
 import config
-from utils import calculate_rsi, calculate_macd, calculate_obv, calculate_slope
+from utility_calculations import calculate_rsi, calculate_macd, calculate_obv, calculate_slope
 
 
 def analyze_divergences(df):
@@ -33,22 +32,23 @@ def analyze_divergences(df):
             }
         
         # Calculate indicators
-        df['RSI'] = calculate_rsi(df['Close'], config.STEP2_RSI_PERIOD)
+        #CHECK why macd_line and signal cant be accessed
+        df['RSI'] = calculate_rsi(df['Close'], config.DIVERGENCE_RSI_PERIOD)
         macd_line, signal_line, histogram = calculate_macd(
             df['Close'], 
-            config.STEP2_MACD_FAST, 
-            config.STEP2_MACD_SLOW, 
-            config.STEP2_MACD_SIGNAL
+            config.DIVERGENCE_MACD_FAST, 
+            config.DIVERGENCE_MACD_SLOW, 
+            config.DIVERGENCE_MACD_SIGNAL
         )
         df['MACD_histogram'] = histogram
         df['OBV'] = calculate_obv(df)
         
         # RSI metrics
         rsi_current = df['RSI'].iloc[-1]
-        rsi_slope = calculate_slope(df['RSI'], config.STEP2_RSI_LOOKBACK)
+        rsi_slope = calculate_slope(df['RSI'], config.DIVERGENCE_RSI_LOOKBACK)
         
         # Price slope (for divergence detection)
-        price_slope = calculate_slope(df['Close'], config.STEP2_RSI_LOOKBACK)
+        price_slope = calculate_slope(df['Close'], config.DIVERGENCE_RSI_LOOKBACK)
         
         # MACD metrics
         current_histogram = df['MACD_histogram'].iloc[-1]
@@ -80,7 +80,7 @@ def analyze_divergences(df):
         }
 
 
-def check_step2(ticker, df):
+def check_divergences(ticker, df):
     """
     Wrapper function for momentum analysis
     

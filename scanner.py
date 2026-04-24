@@ -5,9 +5,9 @@ Runs all signal checks on a single stock and returns raw metrics
 
 from datetime import datetime
 from data_fetch import fetch_stock_data
-from volume_dry_up import check_step1
-from divergences import check_step2
-from relative_strength import check_step3
+from volume_dry_up import check_volume
+from divergences import check_divergences
+from relative_strength import check_relative_strength
 from compression import check_compression
 
 
@@ -32,9 +32,9 @@ def scan_single_stock(ticker, spy_df):
     if avg_volume_20d < 500_000:
         return None
 
-    volume_metrics = check_step1(ticker, df)
-    momentum_metrics = check_step2(ticker, df)
-    rs_metrics = check_step3(ticker, df, spy_df)
+    volume_metrics = check_volume(ticker, df)
+    momentum_metrics = check_divergences(ticker, df)
+    rs_metrics = check_relative_strength(ticker, df, spy_df)
     compression_metrics = check_compression(ticker, df)
 
     return {
@@ -76,5 +76,5 @@ def scan_single_stock(ticker, spy_df):
 
         # Price info
         'current_price': df['Close'].iloc[-1],
-        'volume': df['Volume'].iloc[-1],
+        'volume': df['Volume'].iloc[-1]
     }

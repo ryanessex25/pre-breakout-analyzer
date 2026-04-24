@@ -4,7 +4,7 @@ from datetime import datetime
 
 LOG_FILE = "results/decision_log.csv"
 
-def log_decision(ticker, score, decision):
+def log_decision(ticker, decision):
     """
     Logs a Claude trade decision to CSV
     """

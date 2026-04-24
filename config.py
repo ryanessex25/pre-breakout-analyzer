@@ -3,29 +3,24 @@ Configuration file for Early Breakout Scanner
 """
 
 # ===== FILE PATHS =====
-TICKER_LIST_PATH = "ticker_list.txt"
+TICKER_LIST_PATH = "test_tickers.txt"
 
 RESULTS_FOLDER = "results"
 
-# ===== SCANNING SETTINGS =====
-ALERT_THRESHOLD = 2  # Alert when stock meets 3 out of 3 signals
+# ===== VOLUME DRY-UP THRESHOLDS =====
+VOLUME_LOOKBACK_PERIOD = 20  # Days to calculate average volume
+VOLUME_EMA_PERIOD = 21  # EMA period for pullback support
 
-# ===== STEP 1: VOLUME DRY-UP THRESHOLDS =====
-STEP1_LOOKBACK_PERIOD = 20  # Days to calculate average volume
-STEP1_EMA_PERIOD = 21  # EMA period for pullback support
+# ===== MOMENTUM DIVERGENCE THRESHOLDS =====
+DIVERGENCE_RSI_PERIOD = 14
+DIVERGENCE_RSI_LOOKBACK = 10  
+DIVERGENCE_MACD_FAST = 12
+DIVERGENCE_MACD_SLOW = 26
+DIVERGENCE_MACD_SIGNAL = 9
 
-# ===== STEP 2: MOMENTUM DIVERGENCE THRESHOLDS =====
-STEP2_RSI_PERIOD = 14
-STEP2_RSI_LOOKBACK = 10  # Days to check if RSI is rising
-STEP2_OBV_LOOKBACK = 5  # Days to check if OBV slope is positive
-STEP2_MACD_FAST = 12
-STEP2_MACD_SLOW = 26
-STEP2_MACD_SIGNAL = 9
+# ===== RELATIVE STRENGTH THRESHOLDS =====
+RS_LOOKBACK_SHORT = 10
+RS_LOOKBACK_LONG = 60 
 
-# ===== STEP 3: RELATIVE STRENGTH THRESHOLDS =====
-STEP3_RS_LOOKBACK_SHORT = 10
-STEP3_RS_LOOKBACK_LONG = 60  #
-STEP3_SPY_SYMBOL = "SPY"  # Benchmark for relative strength
-
-# ===== DATA SETTINGS =====
+# ===== DATA FETCH =====
 DATA_LOOKBACK_DAYS = 250  # Total days of historical data to fetch

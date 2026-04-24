@@ -4,9 +4,8 @@ Extracts volume metrics - no scoring logic
 """
 
 import numpy as np
-import pandas as pd
 import config
-from utils import calculate_ema, get_red_day_avg_volume
+from utility_calculations import calculate_ema, get_red_day_avg_volume
 
 
 def analyze_volume_dryup(df):
@@ -21,7 +20,7 @@ def analyze_volume_dryup(df):
     """
     
     try:
-        if len(df) < config.STEP1_LOOKBACK_PERIOD + 5:
+        if len(df) < config.VOLUME_LOOKBACK_PERIOD + 5:
             return {
                 'error': 'Insufficient data',
                 'red_volume_ratio': 1.0,
@@ -36,19 +35,19 @@ def analyze_volume_dryup(df):
             }
         
         # Calculate 21 EMA
-        df['EMA_21'] = calculate_ema(df['Close'], config.STEP1_EMA_PERIOD)
+        df['EMA_21'] = calculate_ema(df['Close'], config.VOLUME_EMA_PERIOD)
         
         # Get 20-day average volume
-        avg_volume_20d = df['Volume'].tail(config.STEP1_LOOKBACK_PERIOD).mean()
+        avg_volume_20d = df['Volume'].tail(config.VOLUME_LOOKBACK_PERIOD).mean()
         
         # Get average volume on red days
-        red_day_avg_volume = get_red_day_avg_volume(df, config.STEP1_LOOKBACK_PERIOD)
+        red_day_avg_volume = get_red_day_avg_volume(df, config.VOLUME_LOOKBACK_PERIOD)
         
         # Calculate ratio
         red_volume_ratio = red_day_avg_volume / avg_volume_20d if avg_volume_20d > 0 else 1
 
         # Isolate red days within lookback
-        recent_data = df.tail(config.STEP1_LOOKBACK_PERIOD).copy()
+        recent_data = df.tail(config.VOLUME_LOOKBACK_PERIOD).copy()
         recent_data['is_red'] = recent_data['Close'] < recent_data['Open']
         red_days = recent_data[recent_data['is_red']]
         red_day_count = len(red_days)
@@ -103,7 +102,7 @@ def analyze_volume_dryup(df):
         }
 
 
-def check_step1(ticker, df):
+def check_volume(ticker, df):
     """
     Wrapper function for volume analysis
     

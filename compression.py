@@ -1,16 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass
-import math
 import numpy as np
 import pandas as pd
 from typing import Optional
-from utils_ta import atr
+from utility_calculations import atr
 
 
-#Step 1.1 — Average True Range (ATR) 
-# ----------------------------------------------------------
+# Average True Range (ATR) 
+# -------------------------
 # Configuration for how we measure ATR compression.
-# ----------------------------------------------------------
 @dataclass
 class ATRCompressionConfig:
     atr_period: int = 14      # ATR lookback (14 = standard Wilder)
@@ -18,9 +16,8 @@ class ATRCompressionConfig:
     factor: float = 0.70      # Compression threshold (today’s ATR < 0.7 × ATR_10_days_ago)
 
 
-# ----------------------------------------------------------
+
 # Result structure — holds outputs and debug info.
-# ----------------------------------------------------------
 @dataclass
 class ATRCompressionResult:
     contracting: bool
@@ -30,14 +27,13 @@ class ATRCompressionResult:
     reason: str | None = None
 
 
-# -----------------------2-----------------------------------
 # Core function
-# ----------------------------------------------------------
-#If no config is passed in, it uses the defaults (ATR 14 / lookback 10 / factor 0.7).
+# If no config is passed in, it uses the defaults (ATR 14 / lookback 10 / factor 0.7).
 def atr_compression(df: pd.DataFrame, cfg: ATRCompressionConfig | None = None) -> ATRCompressionResult:
     """Check if volatility (ATR) has contracted compared to n-bars ago."""
     if cfg is None:
         cfg = ATRCompressionConfig()
+
 
     # --- Input validation ---
     #Checks that you have enough candles to calculate ATR and the lookback comparison.
@@ -51,13 +47,13 @@ def atr_compression(df: pd.DataFrame, cfg: ATRCompressionConfig | None = None) -
             reason="insufficient_bars",
         )
 
-    # --- Compute ATR ---
+    # Compute ATR 
     atr_series = atr(df, period=cfg.atr_period, use_ema=True).dropna()
 
     if len(atr_series) <= cfg.lookback_bars:
         return ATRCompressionResult(False, None, None, cfg.factor, reason="insufficient_atr_window")
 
-    # --- Extract today's and lookback ATR values ---
+    # Extract today's and lookback ATR values
     atr_today = atr_series.iloc[-1].item()  # last ATR value (most recent candle)
     atr_lookback = atr_series.shift(cfg.lookback_bars).dropna().iloc[-1].item()  # ATR value 10 bars ago
 
@@ -65,10 +61,10 @@ def atr_compression(df: pd.DataFrame, cfg: ATRCompressionConfig | None = None) -
     if not np.isfinite(atr_today) or not np.isfinite(atr_lookback):
         return ATRCompressionResult(False, None, None, cfg.factor, reason="non_finite_values")
 
-    # --- Main condition: has ATR contracted? ---
+    # Main condition: has ATR contracted?
     contracting = atr_today < (cfg.factor * atr_lookback)
 
-    # --- Return structured result ---
+    # Return structured result
     return ATRCompressionResult(
         contracting=bool(contracting),
         atr_today=atr_today,
@@ -77,8 +73,10 @@ def atr_compression(df: pd.DataFrame, cfg: ATRCompressionConfig | None = None) -
         reason=None,
     )
 
-#Step 1.3 — Price Near Recent High
-#----------------------------------------------------------
+
+
+# Price Near Recent High
+# -------------------------
 """
 Behavior:
 Price consolidates tightly just under resistance — within 2–3% of the recent high.
@@ -87,7 +85,7 @@ Quantifiable Rule:
   • Close is within −3% (below) to 0% (equal) of the 10-day or 20-day high.
   • Optional check: both highs roughly equal (flat resistance).
 
-If either 10-day or 20-day high proximity condition is met → ✅ price near recent high.
+If either 10-day or 20-day high proximity condition is met → price near recent high.
 """
 
 #Configuration parameters for "near high" check
@@ -117,7 +115,7 @@ def price_near_recent_high(df: pd.DataFrame, cfg: NearHighConfig | None = None) 
     if cfg is None:
         cfg = NearHighConfig()
 
-    # --- Input validation ---
+    # Input validation
     if df is None or len(df) < max(cfg.high_window_long + 2, 30):
         return NearHighResult(False, None, None, None, None, None, "insufficient_bars")
 
@@ -145,6 +143,7 @@ def price_near_recent_high(df: pd.DataFrame, cfg: NearHighConfig | None = None) 
         close=close,
         reason=None,
     )
+
 
 def check_52_week_high_proximity(df: pd.DataFrame, tolerance: float = 0.15) -> dict:
     """
