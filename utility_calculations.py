@@ -1,12 +1,12 @@
+from __future__ import annotations 
+import pandas as pd
+import numpy as np
+
 """
 Utility functions for technical indicators and calculations.
 
 """
 
-import pandas as pd
-import numpy as np
-from __future__ import annotations 
-import numpy as np 
 
 def calculate_ema(data, period):
     """
